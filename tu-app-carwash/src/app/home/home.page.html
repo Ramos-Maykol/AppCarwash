@@ -1,20 +1,64 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>CarWash App</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToProfile()">
+        <ion-icon name="person"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="ion-text-center ion-margin">
+    <ion-icon name="car" size="large" color="primary"></ion-icon>
+    <h1>Bienvenido a CarWash</h1>
+    <p>El mejor servicio de lavado de autos</p>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <div class="ion-grid">
+      <div class="ion-row">
+        <div class="ion-col-6">
+          <ion-card button (click)="goToServices()">
+            <ion-card-content class="ion-text-center">
+              <ion-icon name="water" size="large" color="primary"></ion-icon>
+              <h3>Servicios</h3>
+              <p>Ver servicios disponibles</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+        <div class="ion-col-6">
+          <ion-card button (click)="goToReservations()">
+            <ion-card-content class="ion-text-center">
+              <ion-icon name="calendar" size="large" color="success"></ion-icon>
+              <h3>Mis Reservas</h3>
+              <p>Ver mis reservas</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </div>
+
+      <div class="ion-row">
+        <div class="ion-col-6">
+          <ion-card button (click)="goToBooking()">
+            <ion-card-content class="ion-text-center">
+              <ion-icon name="add-circle" size="large" color="tertiary"></ion-icon>
+              <h3>Reservar</h3>
+              <p>Nueva reserva</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+        <div class="ion-col-6">
+          <ion-card button (click)="goToProfile()">
+            <ion-card-content class="ion-text-center">
+              <ion-icon name="person" size="large" color="warning"></ion-icon>
+              <h3>Perfil</h3>
+              <p>Mi cuenta</p>
+            </ion-card-content>
+          </ion-card>
+        </div>
+      </div>
+    </div>
   </div>
 </ion-content>

@@ -1,0 +1,42 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Iniciar Sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="flex flex-col items-center justify-center min-h-full">
+    <ion-card class="w-full max-w-md">
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <ion-item>
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            <small>Correo electrónico inválido</small>
+          </ion-text>
+
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <small>La contraseña debe tener al menos 6 caracteres</small>
+          </ion-text>
+
+          <ion-button expand="block" type="submit" [disabled]="loginForm.invalid || isLoading" class="mt-4">
+            <span *ngIf="isLoading">Cargando...</span>
+            <span *ngIf="!isLoading">Iniciar Sesión</span>
+          </ion-button>
+        </form>
+
+        <div class="text-center mt-4">
+          <p>¿No tienes cuenta? <ion-router-link (click)="goToRegister()">Regístrate</ion-router-link></p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-toast [isOpen]="!!errorMessage" [message]="errorMessage" duration="3000" color="danger"></ion-toast>
+  </div>
+</ion-content>

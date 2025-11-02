@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card class="text-center">
+    <ion-card-content>
+      <ion-icon name="person" size="large" class="mb-4 text-blue-500"></ion-icon>
+      <h2 class="text-xl font-bold mb-2">{{ user.name }}</h2>
+      <p class="text-gray-600">{{ user.email }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list class="mt-6">
+    <ion-item button (click)="goToReservations()">
+      <ion-icon name="car" slot="start"></ion-icon>
+      <ion-label>Mis Reservas</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <div class="mt-8">
+    <ion-button expand="block" color="danger" (click)="logout()">
+      <ion-icon name="log-out" slot="start"></ion-icon>
+      Cerrar Sesión
+    </ion-button>
+  </div>
+</ion-content>

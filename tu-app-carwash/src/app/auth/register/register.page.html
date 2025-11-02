@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="flex flex-col items-center justify-center min-h-full">
+    <ion-card class="w-full max-w-md">
+      <ion-card-content>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+          <ion-item>
+            <ion-label position="floating">Nombre Completo</ion-label>
+            <ion-input type="text" formControlName="name"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+            <small>El nombre es requerido</small>
+          </ion-text>
+
+          <ion-item>
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            <small>Correo electrónico inválido</small>
+          </ion-text>
+
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <small>La contraseña debe tener al menos 6 caracteres</small>
+          </ion-text>
+
+          <ion-item>
+            <ion-label position="floating">Confirmar Contraseña</ion-label>
+            <ion-input type="password" formControlName="password_confirmation"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="registerForm.get('password_confirmation')?.errors?.['mismatch'] && registerForm.get('password_confirmation')?.touched">
+            <small>Las contraseñas no coinciden</small>
+          </ion-text>
+
+          <ion-button expand="block" type="submit" [disabled]="registerForm.invalid || isLoading" class="mt-4">
+            <span *ngIf="isLoading">Cargando...</span>
+            <span *ngIf="!isLoading">Registrarse</span>
+          </ion-button>
+
+        <div class="text-center mt-4">
+          <p>¿Ya tienes cuenta? <ion-router-link (click)="goToLogin()">Inicia sesión</ion-router-link></p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-toast [isOpen]="!!errorMessage" [message]="errorMessage" duration="3000" color="danger"></ion-toast>
+  </div>
+</ion-content>

@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Servicios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="grid grid-cols-1 gap-4">
+    <ion-card *ngFor="let servicio of servicios" class="shadow-lg">
+      <ion-card-header>
+        <ion-card-title class="flex items-center">
+          <ion-icon name="car" class="mr-2"></ion-icon>
+          {{ servicio.nombre }}
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="text-gray-600 mb-2">{{ servicio.descripcion }}</p>
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-lg font-bold text-blue-600">${{ servicio.precio | number }}</p>
+            <p class="text-sm text-gray-500">{{ servicio.duracion_estimada }} min</p>
+          </div>
+          <ion-button fill="outline" (click)="bookService(servicio)">
+            Reservar
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,51 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Reservar Servicio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div *ngIf="servicio" class="mb-6">
+    <ion-card>
+      <ion-card-content>
+        <h3 class="text-lg font-bold">{{ servicio.nombre }}</h3>
+        <p class="text-gray-600">{{ servicio.descripcion }}</p>
+        <p class="text-blue-600 font-semibold">${{ servicio.precio | number }} - {{ servicio.duracion_estimada }} min</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label>Sucursal</ion-label>
+      <ion-select formControlName="sucursal_id" placeholder="Seleccionar sucursal">
+        <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
+          {{ sucursal.nombre }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Vehículo</ion-label>
+      <ion-select formControlName="vehiculo_id" placeholder="Seleccionar vehículo">
+        <ion-select-option *ngFor="let vehiculo of vehiculos" [value]="vehiculo.id">
+          {{ vehiculo.placa }} - {{ vehiculo.tipo }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Fecha</ion-label>
+      <ion-datetime formControlName="fecha" presentation="date" [min]="getMinDate()"></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Hora</ion-label>
+      <ion-datetime formControlName="hora" presentation="time"></ion-datetime>
+    </ion-item>
+
+    <ion-button expand="block" type="submit" [disabled]="bookingForm.invalid" class="mt-6">
+      Confirmar Reserva
+    </ion-button>
+  </form>
+</ion-content>
