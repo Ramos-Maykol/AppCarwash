@@ -1,0 +1,7 @@
+{
+  "name": "tu-app-carwash",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
