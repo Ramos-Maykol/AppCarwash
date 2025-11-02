@@ -1,30 +1,59 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-title>Servicios</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <div class="grid grid-cols-1 gap-4">
-    <ion-card *ngFor="let servicio of servicios" class="shadow-lg">
-      <ion-card-header>
-        <ion-card-title class="flex items-center">
-          <ion-icon name="car" class="mr-2"></ion-icon>
-          {{ servicio.nombre }}
-        </ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p class="text-gray-600 mb-2">{{ servicio.descripcion }}</p>
-        <div class="flex justify-between items-center">
-          <div>
-            <p class="text-lg font-bold text-blue-600">${{ servicio.precio | number }}</p>
-            <p class="text-sm text-gray-500">{{ servicio.duracion_estimada }} min</p>
+<ion-content [fullscreen]="true">
+  <div class="servicios-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading()" class="loading-container">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading() && servicios().length === 0" class="empty-state">
+      <ion-icon name="water-outline" class="empty-icon"></ion-icon>
+      <h2>No hay servicios disponibles</h2>
+      <p>Vuelve más tarde para ver nuestros servicios</p>
+    </div>
+
+    <!-- Servicios List -->
+    <div *ngIf="!isLoading() && servicios().length > 0" class="servicios-list">
+      <ion-card *ngFor="let servicio of servicios()" class="servicio-card">
+        <ion-card-content>
+          <div class="servicio-header">
+            <div class="servicio-icon">
+              <ion-icon name="water-outline"></ion-icon>
+            </div>
+            <div class="servicio-info">
+              <h3>{{ servicio.nombre }}</h3>
+              <p class="descripcion">{{ servicio.descripcion }}</p>
+            </div>
           </div>
-          <ion-button fill="outline" (click)="bookService(servicio)">
-            Reservar
+
+          <div class="servicio-details">
+            <div class="detail-item">
+              <ion-icon name="time-outline"></ion-icon>
+              <span>{{ servicio.duracion_minutos }} minutos</span>
+            </div>
+            <div class="precio-info">
+              <span class="precio">{{ obtenerRangoPrecio(servicio) }}</span>
+              <ion-chip class="precio-chip">
+                <span class="precio-label">Precio según tipo de vehículo</span>
+              </ion-chip>
+            </div>
+          </div>
+
+          <ion-button 
+            expand="block" 
+            (click)="reservarServicio(servicio)"
+            class="reservar-button">
+            Reservar Ahora
+            <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
           </ion-button>
-        </div>
-      </ion-card-content>
-    </ion-card>
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 </ion-content>

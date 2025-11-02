@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonItem, IonLabel, IonText, IonRouterLink, IonCard, IonCardContent, IonToast } from '@ionic/angular/standalone';
-import { Router } from '@angular/router';
+import { IonContent, IonInput, IonButton, IonItem, IonLabel, IonText, IonToast, IonIcon, IonRouterLink } from '@ionic/angular/standalone';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonButton, IonItem, IonLabel, IonText, IonRouterLink, IonCard, IonCardContent, IonToast, CommonModule, ReactiveFormsModule]
+  imports: [IonContent, IonInput, IonButton, IonItem, IonLabel, IonText, IonToast, IonIcon, IonRouterLink, CommonModule, ReactiveFormsModule, RouterLink]
 })
 export class RegisterPage {
   private fb = inject(FormBuilder);
@@ -26,6 +26,20 @@ export class RegisterPage {
 
   isLoading = false;
   errorMessage = '';
+
+  @ViewChild('nameInput', { static: false }) nameInput!: IonInput;
+
+  ngAfterViewInit(): void {
+    // Mover el foco al primer campo al entrar a la página para evitar que el foco quede en el enlace de la página anterior
+    setTimeout(() => this.nameInput?.setFocus(), 0);
+  }
+
+  onNavLinkClick(event?: Event) {
+    const el = (event?.currentTarget as HTMLElement) || (document.activeElement as HTMLElement | null);
+    if (el && typeof el.blur === 'function') {
+      el.blur();
+    }
+  }
 
   passwordMatchValidator(form: FormGroup) {
     const password = form.get('password');
@@ -57,5 +71,10 @@ export class RegisterPage {
 
   goToLogin() {
     this.router.navigate(['/auth/login']);
+  }
+
+  navigateToLogin(event?: Event) {
+    this.onNavLinkClick(event);
+    setTimeout(() => this.router.navigate(['/auth/login']), 0);
   }
 }

@@ -14,6 +14,8 @@ export interface RegisterRequest {
   email: string;
   password: string;
   password_confirmation: string;
+  telefono?: string;
+  direccion?: string;
 }
 
 export interface AuthResponse {

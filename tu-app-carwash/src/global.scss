@@ -35,3 +35,9 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* Prevent hidden Ionic pages from overlaying or retaining focus during transitions */
+.ion-page-hidden,
+.ion-page[aria-hidden="true"] {
+  display: none !important;
+}

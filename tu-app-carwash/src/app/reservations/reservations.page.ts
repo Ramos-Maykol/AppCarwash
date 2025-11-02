@@ -1,64 +1,143 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge, IonButton, IonIcon } from '@ionic/angular/standalone';
-import { addIcons } from 'ionicons';
-import { calendar, time, checkmarkCircle } from 'ionicons/icons';
-
-interface Reserva {
-  id: number;
-  servicio: string;
-  fecha: string;
-  hora: string;
-  estado: 'pendiente' | 'confirmada' | 'completada' | 'cancelada';
-  sucursal: string;
-  vehiculo: string;
-}
+import { 
+  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, 
+  IonBadge, IonButton, IonIcon, IonSpinner, IonSegment, IonSegmentButton,
+  IonLabel, IonRefresher, IonRefresherContent
+} from '@ionic/angular/standalone';
+import { ReservaService } from '../services/reserva.service';
+import { Reserva } from '../models/interfaces';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reservations',
   templateUrl: './reservations.page.html',
   styleUrls: ['./reservations.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonBadge, IonButton, IonIcon, CommonModule]
+  imports: [
+    CommonModule,
+    IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent,
+    IonBadge, IonButton, IonIcon, IonSpinner, IonSegment, IonSegmentButton,
+    IonLabel, IonRefresher, IonRefresherContent
+  ]
 })
 export class ReservationsPage implements OnInit {
-  reservas: Reserva[] = [
-    // TODO: Load from API
-    {
-      id: 1,
-      servicio: 'Lavado Premium',
-      fecha: '2024-01-15',
-      hora: '10:00',
-      estado: 'confirmada',
-      sucursal: 'Sucursal Centro',
-      vehiculo: 'ABC-123'
-    },
-    {
-      id: 2,
-      servicio: 'Lavado Básico',
-      fecha: '2024-01-20',
-      hora: '14:30',
-      estado: 'pendiente',
-      sucursal: 'Sucursal Norte',
-      vehiculo: 'XYZ-456'
-    }
-  ];
+  private reservaService = inject(ReservaService);
+  private router = inject(Router);
 
-  constructor() {
-    addIcons({ calendar, time, checkmarkCircle });
-  }
+  reservas = this.reservaService.reservas;
+  isLoading = signal(false);
+  selectedFilter = signal<string>('todas');
+
+  reservasFiltradas = signal<Reserva[]>([]);
 
   ngOnInit() {
-    // TODO: Load reservations from API
+    this.cargarReservas();
   }
 
-  getEstadoColor(estado: string) {
-    switch (estado) {
-      case 'pendiente': return 'warning';
-      case 'confirmada': return 'primary';
-      case 'completada': return 'success';
-      case 'cancelada': return 'danger';
-      default: return 'medium';
+  cargarReservas(event?: any) {
+    this.isLoading.set(true);
+    this.reservaService.obtenerMisReservas().subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this.filtrarReservas();
+        if (event) {
+          event.target.complete();
+        }
+      },
+      error: () => {
+        this.isLoading.set(false);
+        if (event) {
+          event.target.complete();
+        }
+      }
+    });
+  }
+
+  onFilterChange(event: any) {
+    this.selectedFilter.set(event.detail.value);
+    this.filtrarReservas();
+  }
+
+  filtrarReservas() {
+    const filter = this.selectedFilter();
+    const todas = this.reservas();
+
+    if (filter === 'todas') {
+      this.reservasFiltradas.set(todas);
+    } else if (filter === 'activas') {
+      this.reservasFiltradas.set(
+        todas.filter(r => ['pendiente', 'confirmada', 'en_proceso'].includes(r.estado))
+      );
+    } else if (filter === 'completadas') {
+      this.reservasFiltradas.set(
+        todas.filter(r => r.estado === 'completada')
+      );
+    } else if (filter === 'canceladas') {
+      this.reservasFiltradas.set(
+        todas.filter(r => r.estado === 'cancelada')
+      );
     }
+  }
+
+  cancelarReserva(id: number) {
+    if (confirm('¿Estás seguro de cancelar esta reserva?')) {
+      this.isLoading.set(true);
+      this.reservaService.cancelarReserva(id).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.filtrarReservas();
+        },
+        error: () => {
+          this.isLoading.set(false);
+          alert('No se pudo cancelar la reserva');
+        }
+      });
+    }
+  }
+
+  nuevaReserva() {
+    this.router.navigate(['/booking']);
+  }
+
+  getEstadoClass(estado: string): string {
+    switch (estado) {
+      case 'pendiente': return 'estado-pendiente';
+      case 'confirmada': return 'estado-confirmada';
+      case 'en_proceso': return 'estado-proceso';
+      case 'completada': return 'estado-completada';
+      case 'cancelada': return 'estado-cancelada';
+      default: return '';
+    }
+  }
+
+  getEstadoTexto(estado: string): string {
+    switch (estado) {
+      case 'pendiente': return 'Pendiente';
+      case 'confirmada': return 'Confirmada';
+      case 'en_proceso': return 'En Proceso';
+      case 'completada': return 'Completada';
+      case 'cancelada': return 'Cancelada';
+      default: return estado;
+    }
+  }
+
+  formatearFecha(fecha: string): string {
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-ES', { 
+      weekday: 'short', 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
+
+  formatearHora(fechaHora: string): string {
+    const date = new Date(fechaHora);
+    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  puedeSerCancelada(reserva: Reserva): boolean {
+    return ['pendiente', 'confirmada'].includes(reserva.estado);
   }
 }

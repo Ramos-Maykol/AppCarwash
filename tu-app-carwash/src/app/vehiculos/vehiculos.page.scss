@@ -15,7 +15,7 @@ ion-content {
   --background: #f8f9fa;
 }
 
-.servicios-container {
+.vehiculos-container {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
@@ -52,35 +52,42 @@ ion-content {
   p {
     font-size: 14px;
     color: #6c757d;
-    margin: 0;
+    margin: 0 0 24px 0;
+  }
+
+  .add-button {
+    --background: #1a1a1a;
+    --border-radius: 8px;
+    font-weight: 600;
+    text-transform: none;
   }
 }
 
-.servicios-list {
+.vehiculos-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.servicio-card {
+.vehiculo-card {
   --background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   margin: 0;
 
   ion-card-content {
-    padding: 24px;
+    padding: 20px;
   }
 
-  .servicio-header {
+  .vehiculo-header {
     display: flex;
     align-items: flex-start;
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 
-    .servicio-icon {
-      width: 56px;
-      height: 56px;
+    .vehiculo-icon {
+      width: 48px;
+      height: 48px;
       background: #f8f9fa;
       border-radius: 12px;
       display: flex;
@@ -89,94 +96,123 @@ ion-content {
       flex-shrink: 0;
 
       ion-icon {
-        font-size: 28px;
+        font-size: 24px;
         color: #1a1a1a;
       }
     }
 
-    .servicio-info {
+    .vehiculo-info {
       flex: 1;
 
       h3 {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
         color: #1a1a1a;
-        margin: 0 0 8px 0;
+        margin: 0 0 4px 0;
       }
 
-      .descripcion {
-        font-size: 14px;
+      .tipo {
+        font-size: 13px;
         color: #6c757d;
         margin: 0;
-        line-height: 1.5;
       }
     }
   }
 
-  .servicio-details {
+  .vehiculo-details {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding: 16px;
-    background: #f8f9fa;
-    border-radius: 8px;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
 
     .detail-item {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
 
-      ion-icon {
-        font-size: 18px;
+      .label {
+        font-size: 13px;
         color: #6c757d;
       }
 
-      span {
+      .value {
         font-size: 14px;
-        color: #1a1a1a;
         font-weight: 500;
-      }
-    }
-
-    .precio-info {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding-top: 12px;
-      border-top: 1px solid #e5e7eb;
-
-      .precio {
-        font-size: 24px;
-        font-weight: 700;
         color: #1a1a1a;
-      }
-
-      .precio-chip {
-        --background: #ffffff;
-        --color: #6c757d;
-        height: auto;
-        padding: 4px 12px;
-        font-size: 12px;
-        margin: 0;
-
-        .precio-label {
-          font-size: 11px;
-        }
       }
     }
   }
 
-  .reservar-button {
+  .vehiculo-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+
+    ion-button {
+      --color: #6c757d;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      margin: 0;
+
+      &[color="danger"] {
+        --color: #dc3545;
+      }
+    }
+  }
+}
+
+ion-fab-button {
+  --background: #1a1a1a;
+  --color: #ffffff;
+}
+
+// Modal Styles
+.modal-content {
+  --background: #f8f9fa;
+  padding: 20px;
+
+  form {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+
+    .custom-input {
+      --background: #ffffff;
+      --border-radius: 8px;
+      --padding-start: 16px;
+      --padding-end: 16px;
+      border-radius: 8px;
+
+      ion-label {
+        font-size: 14px;
+        color: #6c757d;
+      }
+
+      ion-input,
+      ion-select {
+        --color: #1a1a1a;
+        font-size: 15px;
+      }
+    }
+  }
+
+  .submit-button {
     --background: #1a1a1a;
     --background-hover: #2d2d2d;
     --background-activated: #0d0d0d;
     --border-radius: 8px;
     --padding-top: 16px;
     --padding-bottom: 16px;
+    margin-top: 8px;
     font-weight: 600;
     letter-spacing: 0.3px;
     text-transform: none;
-    margin-top: 4px;
   }
 }

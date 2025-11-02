@@ -1,31 +1,35 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, IonButton, IonIcon, IonList, IonItem, IonLabel } from '@ionic/angular/standalone';
+import { 
+  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, 
+  IonButton, IonIcon, IonList, IonItem, IonLabel, IonAvatar
+} from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
-import { addIcons } from 'ionicons';
-import { person, car, logOut } from 'ionicons/icons';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, IonButton, IonIcon, IonList, IonItem, IonLabel, CommonModule]
+  imports: [
+    CommonModule,
+    IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent,
+    IonButton, IonIcon, IonList, IonItem, IonLabel, IonAvatar
+  ]
 })
 export class ProfilePage implements OnInit {
   private router = inject(Router);
+  private authService = inject(AuthService);
 
-  user = {
-    name: 'Juan Pérez',
-    email: 'juan@example.com'
-  };
-
-  constructor() {
-    addIcons({ person, car, logOut });
-  }
+  currentUser = this.authService.currentUser;
 
   ngOnInit() {
-    // TODO: Load user data from API
+    // User data is already loaded from auth service
+  }
+
+  goToVehiculos() {
+    this.router.navigate(['/vehiculos']);
   }
 
   goToReservations() {
@@ -33,7 +37,17 @@ export class ProfilePage implements OnInit {
   }
 
   logout() {
-    // TODO: Clear token and logout
-    this.router.navigate(['/auth/login']);
+    if (confirm('¿Estás seguro de cerrar sesión?')) {
+      this.authService.logout().subscribe({
+        next: () => {
+          this.router.navigate(['/auth/login']);
+        },
+        error: () => {
+          // Even if API fails, clear local data
+          localStorage.removeItem('auth_token');
+          this.router.navigate(['/auth/login']);
+        }
+      });
+    }
   }
 }

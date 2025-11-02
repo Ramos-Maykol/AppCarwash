@@ -1,16 +1,78 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { RouteReuseStrategy, provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
+import { RouteReuseStrategy, provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 import { provideHttpClient } from '@angular/common/http';
+import { APP_INITIALIZER } from '@angular/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { addIcons } from 'ionicons';
+import {
+  carSportOutline,
+  waterOutline,
+  calendarOutline,
+  timeOutline,
+  personOutline,
+  carOutline,
+  addOutline,
+  createOutline,
+  trashOutline,
+  closeOutline,
+  checkmarkCircleOutline,
+  locationOutline,
+  cashOutline,
+  arrowForwardOutline,
+  arrowBackOutline,
+  logOutOutline,
+  settingsOutline,
+  chevronForwardOutline,
+  closeCircleOutline
+} from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 
+// ⚡ FUNCIÓN DE INICIALIZACIÓN PARA REGISTRAR ICONOS
+export function initializeIcons() {
+  return () => {
+    addIcons({
+      'car-sport-outline': carSportOutline,
+      'water-outline': waterOutline,
+      'calendar-outline': calendarOutline,
+      'time-outline': timeOutline,
+      'person-outline': personOutline,
+      'car-outline': carOutline,
+      'add-outline': addOutline,
+      'create-outline': createOutline,
+      'trash-outline': trashOutline,
+      'close-outline': closeOutline,
+      'checkmark-circle-outline': checkmarkCircleOutline,
+      'location-outline': locationOutline,
+      'cash-outline': cashOutline,
+      'arrow-forward-outline': arrowForwardOutline,
+      'arrow-back-outline': arrowBackOutline,
+      'log-out-outline': logOutOutline,
+      'settings-outline': settingsOutline,
+      'chevron-forward-outline': chevronForwardOutline,
+      'close-circle-outline': closeCircleOutline
+    });
+    return Promise.resolve();
+  };
+}
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideIonicAngular({ mode: 'ios', animated: false }),
+    provideRouter(
+      routes,
+      withEnabledBlockingInitialNavigation(),
+      withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })
+    ),
     provideHttpClient(),
+    provideNoopAnimations(),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeIcons,
+      multi: true
+    }
   ],
 });

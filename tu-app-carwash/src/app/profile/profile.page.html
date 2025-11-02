@@ -1,29 +1,59 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-title>Perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <ion-card class="text-center">
-    <ion-card-content>
-      <ion-icon name="person" size="large" class="mb-4 text-blue-500"></ion-icon>
-      <h2 class="text-xl font-bold mb-2">{{ user.name }}</h2>
-      <p class="text-gray-600">{{ user.email }}</p>
-    </ion-card-content>
-  </ion-card>
+<ion-content [fullscreen]="true">
+  <div class="profile-container">
+    <!-- User Info Card -->
+    <div class="user-card">
+      <div class="user-avatar">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <h2 class="user-name">{{ currentUser()?.name || 'Usuario' }}</h2>
+      <p class="user-email">{{ currentUser()?.email || 'email@example.com' }}</p>
+    </div>
 
-  <ion-list class="mt-6">
-    <ion-item button (click)="goToReservations()">
-      <ion-icon name="car" slot="start"></ion-icon>
-      <ion-label>Mis Reservas</ion-label>
-    </ion-item>
-  </ion-list>
+    <!-- Menu Options -->
+    <div class="menu-section">
+      <h3 class="section-title">Mi Cuenta</h3>
+      
+      <div class="menu-list">
+        <div class="menu-item" (click)="goToVehiculos()">
+          <div class="menu-icon">
+            <ion-icon name="car-outline"></ion-icon>
+          </div>
+          <div class="menu-content">
+            <h4>Mis Vehículos</h4>
+            <p>Gestionar mis vehículos</p>
+          </div>
+          <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+        </div>
 
-  <div class="mt-8">
-    <ion-button expand="block" color="danger" (click)="logout()">
-      <ion-icon name="log-out" slot="start"></ion-icon>
-      Cerrar Sesión
-    </ion-button>
+        <div class="menu-item" (click)="goToReservations()">
+          <div class="menu-icon">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </div>
+          <div class="menu-content">
+            <h4>Mis Reservas</h4>
+            <p>Ver historial de reservas</p>
+          </div>
+          <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Button -->
+    <div class="logout-section">
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        (click)="logout()"
+        class="logout-button">
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        Cerrar Sesión
+      </ion-button>
+    </div>
   </div>
 </ion-content>

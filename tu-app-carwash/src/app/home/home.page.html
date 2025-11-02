@@ -1,63 +1,52 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>CarWash App</ion-title>
+    <ion-title>CarWash</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="goToProfile()">
-        <ion-icon name="person"></ion-icon>
+      <ion-button (click)="goToProfile()" fill="clear" class="profile-btn">
+        <ion-icon slot="icon-only" name="person-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <div class="ion-text-center ion-margin">
-    <ion-icon name="car" size="large" color="primary"></ion-icon>
-    <h1>Bienvenido a CarWash</h1>
-    <p>El mejor servicio de lavado de autos</p>
+<ion-content [fullscreen]="true">
+  <div class="home-container">
+    <div class="welcome-section">
+      <h1 class="welcome-title">Bienvenido</h1>
+      <p class="welcome-subtitle">Selecciona un servicio</p>
+    </div>
 
-    <div class="ion-grid">
-      <div class="ion-row">
-        <div class="ion-col-6">
-          <ion-card button (click)="goToServices()">
-            <ion-card-content class="ion-text-center">
-              <ion-icon name="water" size="large" color="primary"></ion-icon>
-              <h3>Servicios</h3>
-              <p>Ver servicios disponibles</p>
-            </ion-card-content>
-          </ion-card>
+    <div class="services-grid">
+      <div class="service-card" (click)="goToServices()">
+        <div class="icon-wrapper">
+          <ion-icon name="water-outline"></ion-icon>
         </div>
-
-        <div class="ion-col-6">
-          <ion-card button (click)="goToReservations()">
-            <ion-card-content class="ion-text-center">
-              <ion-icon name="calendar" size="large" color="success"></ion-icon>
-              <h3>Mis Reservas</h3>
-              <p>Ver mis reservas</p>
-            </ion-card-content>
-          </ion-card>
-        </div>
+        <h3>Servicios</h3>
+        <p>Ver servicios disponibles</p>
       </div>
 
-      <div class="ion-row">
-        <div class="ion-col-6">
-          <ion-card button (click)="goToBooking()">
-            <ion-card-content class="ion-text-center">
-              <ion-icon name="add-circle" size="large" color="tertiary"></ion-icon>
-              <h3>Reservar</h3>
-              <p>Nueva reserva</p>
-            </ion-card-content>
-          </ion-card>
+      <div class="service-card" (click)="goToBooking()">
+        <div class="icon-wrapper">
+          <ion-icon name="calendar-outline"></ion-icon>
         </div>
+        <h3>Reservar</h3>
+        <p>Agendar nuevo servicio</p>
+      </div>
 
-        <div class="ion-col-6">
-          <ion-card button (click)="goToProfile()">
-            <ion-card-content class="ion-text-center">
-              <ion-icon name="person" size="large" color="warning"></ion-icon>
-              <h3>Perfil</h3>
-              <p>Mi cuenta</p>
-            </ion-card-content>
-          </ion-card>
+      <div class="service-card" (click)="goToReservations()">
+        <div class="icon-wrapper">
+          <ion-icon name="time-outline"></ion-icon>
         </div>
+        <h3>Mis Reservas</h3>
+        <p>Ver mis citas</p>
+      </div>
+
+      <div class="service-card" (click)="goToVehiculos()">
+        <div class="icon-wrapper">
+          <ion-icon name="car-outline"></ion-icon>
+        </div>
+        <h3>Vehículos</h3>
+        <p>Mis vehículos</p>
       </div>
     </div>
   </div>

@@ -1,51 +1,240 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>Reservar Servicio</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva Reserva</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <div *ngIf="servicio" class="mb-6">
-    <ion-card>
-      <ion-card-content>
-        <h3 class="text-lg font-bold">{{ servicio.nombre }}</h3>
-        <p class="text-gray-600">{{ servicio.descripcion }}</p>
-        <p class="text-blue-600 font-semibold">${{ servicio.precio | number }} - {{ servicio.duracion_estimada }} min</p>
-      </ion-card-content>
-    </ion-card>
+<ion-content [fullscreen]="true">
+  <div class="booking-container">
+    <!-- Progress Indicator -->
+    <div class="progress-steps">
+      <div class="step" [class.active]="currentStep() >= 1" [class.completed]="currentStep() > 1">
+        <div class="step-number">1</div>
+        <span class="step-label">Servicio</span>
+      </div>
+      <div class="step-line" [class.completed]="currentStep() > 1"></div>
+      <div class="step" [class.active]="currentStep() >= 2" [class.completed]="currentStep() > 2">
+        <div class="step-number">2</div>
+        <span class="step-label">Fecha</span>
+      </div>
+      <div class="step-line" [class.completed]="currentStep() > 2"></div>
+      <div class="step" [class.active]="currentStep() >= 3" [class.completed]="currentStep() > 3">
+        <div class="step-number">3</div>
+        <span class="step-label">Hora</span>
+      </div>
+      <div class="step-line" [class.completed]="currentStep() > 3"></div>
+      <div class="step" [class.active]="currentStep() >= 4">
+        <div class="step-number">4</div>
+        <span class="step-label">Confirmar</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Select Service and Vehicle -->
+    <div *ngIf="currentStep() === 1" class="step-content">
+      <h2 class="step-title">Selecciona el Servicio y Vehículo</h2>
+      
+      <!-- Service Selection -->
+      <div class="section">
+        <h3 class="section-title">Servicio</h3>
+        <div class="selection-grid">
+          <div *ngFor="let servicio of servicios()" 
+               class="selection-card"
+               [class.selected]="selectedServicioId() === servicio.id"
+               (click)="selectedServicioId.set(servicio.id)">
+            <ion-icon name="water-outline"></ion-icon>
+            <h4>{{ servicio.nombre }}</h4>
+            <p>{{ servicio.duracion_minutos }} min</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vehicle Selection -->
+      <div class="section">
+        <h3 class="section-title">Vehículo</h3>
+        <div *ngIf="vehiculos().length === 0" class="empty-message">
+          <p>No tienes vehículos registrados</p>
+          <ion-button size="small" routerLink="/vehiculos">Agregar Vehículo</ion-button>
+        </div>
+        <div class="selection-grid">
+          <div *ngFor="let vehiculo of vehiculos()" 
+               class="selection-card"
+               [class.selected]="selectedVehiculoId() === vehiculo.id"
+               (click)="selectedVehiculoId.set(vehiculo.id)">
+            <ion-icon name="car-outline"></ion-icon>
+            <h4>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h4>
+            <p>{{ vehiculo.placa }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Display -->
+      <div *ngIf="precioCalculado()" class="price-display">
+        <ion-icon name="cash-outline"></ion-icon>
+        <div class="price-info">
+          <span class="price-label">Precio Total</span>
+          <span class="price-value">${{ precioCalculado()?.toFixed(2) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Select Branch and Date -->
+    <div *ngIf="currentStep() === 2" class="step-content">
+      <h2 class="step-title">Selecciona Sucursal y Fecha</h2>
+      
+      <!-- Branch Selection -->
+      <div class="section">
+        <h3 class="section-title">Sucursal</h3>
+        <ion-radio-group [value]="selectedSucursalId()" (ionChange)="selectedSucursalId.set($event.detail.value)">
+          <div *ngFor="let sucursal of sucursales()" class="radio-card">
+            <ion-radio [value]="sucursal.id"></ion-radio>
+            <div class="radio-content">
+              <h4>{{ sucursal.nombre }}</h4>
+              <p><ion-icon name="location-outline"></ion-icon> {{ sucursal.direccion }}</p>
+            </div>
+          </div>
+        </ion-radio-group>
+      </div>
+
+      <!-- Date Selection -->
+      <div class="section">
+        <h3 class="section-title">Fecha</h3>
+        <ion-datetime 
+          presentation="date"
+          [value]="selectedFecha()"
+          [min]="getMinDate()"
+          [max]="getMaxDate()"
+          (ionChange)="onFechaChange($event)"
+          class="date-picker">
+        </ion-datetime>
+      </div>
+    </div>
+
+    <!-- Step 3: Select Time Slot -->
+    <div *ngIf="currentStep() === 3" class="step-content">
+      <h2 class="step-title">Selecciona la Hora</h2>
+      
+      <div *ngIf="isLoading()" class="loading-state">
+        <ion-spinner></ion-spinner>
+        <p>Cargando horarios disponibles...</p>
+      </div>
+
+      <div *ngIf="!isLoading() && cuposDisponibles().length === 0" class="empty-state">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <p>No hay horarios disponibles para esta fecha</p>
+      </div>
+
+      <div *ngIf="!isLoading() && cuposDisponibles().length > 0" class="time-slots">
+        <div *ngFor="let cupo of cuposDisponibles()" 
+             class="time-slot"
+             [class.selected]="selectedCupoId() === cupo.id"
+             (click)="selectedCupoId.set(cupo.id)">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ formatHora(cupo.fecha_hora) }}</span>
+          <ion-chip *ngIf="selectedCupoId() === cupo.id" class="selected-chip">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+          </ion-chip>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Confirmation -->
+    <div *ngIf="currentStep() === 4" class="step-content">
+      <h2 class="step-title">Confirmar Reserva</h2>
+      
+      <div class="confirmation-details">
+        <div class="detail-card">
+          <ion-icon name="water-outline"></ion-icon>
+          <div class="detail-content">
+            <span class="detail-label">Servicio</span>
+            <span class="detail-value">{{ selectedServicio()?.nombre }}</span>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <ion-icon name="car-outline"></ion-icon>
+          <div class="detail-content">
+            <span class="detail-label">Vehículo</span>
+            <span class="detail-value">
+              {{ selectedVehiculo()?.marca }} {{ selectedVehiculo()?.modelo }}
+              <small>{{ selectedVehiculo()?.placa }}</small>
+            </span>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <ion-icon name="location-outline"></ion-icon>
+          <div class="detail-content">
+            <span class="detail-label">Sucursal</span>
+            <span class="detail-value">
+              {{ getSelectedSucursalNombre() }}
+            </span>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <ion-icon name="calendar-outline"></ion-icon>
+          <div class="detail-content">
+            <span class="detail-label">Fecha y Hora</span>
+            <span class="detail-value">
+              {{ selectedFecha() }} - 
+              {{ formatHora(getSelectedCupoFechaHora()) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="detail-card price-card">
+          <ion-icon name="cash-outline"></ion-icon>
+          <div class="detail-content">
+            <span class="detail-label">Precio Total</span>
+            <span class="detail-value price">${{ precioCalculado()?.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observations -->
+      <div class="section">
+        <h3 class="section-title">Observaciones (Opcional)</h3>
+        <ion-textarea
+          [value]="observaciones()"
+          (ionChange)="observaciones.set($event.detail.value || '')"
+          placeholder="Agrega comentarios o solicitudes especiales..."
+          rows="4"
+          class="custom-textarea">
+        </ion-textarea>
+      </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+      <ion-button
+        *ngIf="currentStep() > 1"
+        fill="outline"
+        (click)="previousStep()"
+        class="nav-button">
+        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+        Anterior
+      </ion-button>
+      
+      <ion-button
+        *ngIf="currentStep() < 4"
+        [disabled]="!canContinue() || isLoading()"
+        (click)="nextStep()"
+        class="nav-button primary">
+        Siguiente
+        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+      </ion-button>
+
+      <ion-button
+        *ngIf="currentStep() === 4"
+        [disabled]="!canContinue() || isLoading()"
+        (click)="confirmarReserva()"
+        class="nav-button primary">
+        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+        Confirmar Reserva
+      </ion-button>
+    </div>
   </div>
-
-  <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
-    <ion-item>
-      <ion-label>Sucursal</ion-label>
-      <ion-select formControlName="sucursal_id" placeholder="Seleccionar sucursal">
-        <ion-select-option *ngFor="let sucursal of sucursales" [value]="sucursal.id">
-          {{ sucursal.nombre }}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Vehículo</ion-label>
-      <ion-select formControlName="vehiculo_id" placeholder="Seleccionar vehículo">
-        <ion-select-option *ngFor="let vehiculo of vehiculos" [value]="vehiculo.id">
-          {{ vehiculo.placa }} - {{ vehiculo.tipo }}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Fecha</ion-label>
-      <ion-datetime formControlName="fecha" presentation="date" [min]="getMinDate()"></ion-datetime>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Hora</ion-label>
-      <ion-datetime formControlName="hora" presentation="time"></ion-datetime>
-    </ion-item>
-
-    <ion-button expand="block" type="submit" [disabled]="bookingForm.invalid" class="mt-6">
-      Confirmar Reserva
-    </ion-button>
-  </form>
 </ion-content>
