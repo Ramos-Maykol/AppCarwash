@@ -12,6 +12,7 @@ import {
   timeOutline,
   personOutline,
   carOutline,
+  car,  // Agregado para el menú
   addOutline,
   createOutline,
   trashOutline,
@@ -49,6 +50,7 @@ export function initializeIcons() {
       'time-outline': timeOutline,
       'person-outline': personOutline,
       'car-outline': carOutline,
+      'car': car,  // Agregado para el menú
       'add-outline': addOutline,
       'create-outline': createOutline,
       'trash-outline': trashOutline,
