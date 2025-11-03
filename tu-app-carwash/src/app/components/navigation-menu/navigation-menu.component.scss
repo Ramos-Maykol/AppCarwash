@@ -1,0 +1,116 @@
+.navigation-menu {
+  --width: 280px;
+  --background: var(--surface-primary);
+  --border: 1px solid var(--border-color);
+}
+
+.menu-header {
+  --background: var(--primary-color);
+  --color: white;
+  --min-height: 56px;
+  border-bottom: 1px solid var(--primary-dark);
+}
+
+.menu-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white !important;
+}
+
+.menu-content {
+  --background: var(--surface-primary);
+}
+
+.menu-list {
+  background: transparent;
+  padding: var(--spacing-md) 0;
+}
+
+.menu-item {
+  --background: transparent;
+  --border-radius: var(--border-radius-lg);
+  --padding-start: var(--spacing-lg);
+  --padding-end: var(--spacing-lg);
+  --padding-top: var(--spacing-md);
+  --padding-bottom: var(--spacing-md);
+  margin: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-lg);
+  transition: all 0.2s ease;
+
+  &:hover {
+    --background: var(--neutral-50);
+    box-shadow: var(--shadow-light);
+  }
+
+  &::part(native) {
+    border-radius: var(--border-radius-lg);
+  }
+}
+
+.menu-icon {
+  color: var(--primary-color);
+  font-size: 1.25rem;
+  margin-right: var(--spacing-md);
+  min-width: 24px;
+}
+
+.menu-label {
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+    margin: 0 0 var(--spacing-xs) 0;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: var(--neutral-600);
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+.menu-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+  background: var(--surface-primary);
+}
+
+.logout-item {
+  --background: var(--error-color);
+  --color: white;
+  --border-radius: var(--border-radius-lg);
+  --padding-start: var(--spacing-lg);
+  --padding-end: var(--spacing-lg);
+  --padding-top: var(--spacing-md);
+  --padding-bottom: var(--spacing-md);
+  margin: 0;
+
+  &:hover {
+    --background: #dc2626;
+  }
+
+  &::part(native) {
+    border-radius: var(--border-radius-lg);
+  }
+}
+
+.logout-icon {
+  color: white;
+  font-size: 1.125rem;
+  margin-right: var(--spacing-md);
+  min-width: 24px;
+}
+
+.logout-label {
+  h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: white !important;
+    margin: 0;
+  }
+}

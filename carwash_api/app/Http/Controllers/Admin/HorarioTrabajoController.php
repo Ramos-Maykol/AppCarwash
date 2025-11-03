@@ -15,7 +15,7 @@ class HorarioTrabajoController extends Controller
      */
     public function index(Request $request)
     {
-        $request->validate(['sucursal_id' => 'required|integer|exists:sucursales,id']);
+        $request->validate(['sucursal_id' => 'required|integer|exists:sucursals,id']);
         
         $horarios = HorarioTrabajo::where('sucursal_id', $request->sucursal_id)
             ->orderBy('dia_semana')
@@ -30,7 +30,7 @@ class HorarioTrabajoController extends Controller
     public function store(Request $request)
     {
         $datosValidados = $request->validate([
-            'sucursal_id' => 'required|integer|exists:sucursales,id',
+            'sucursal_id' => 'required|integer|exists:sucursals,id',
             'dia_semana' => [
                 'required',
                 'integer',

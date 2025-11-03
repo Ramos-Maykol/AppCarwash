@@ -11,22 +11,22 @@ export class ServicioService {
 
   servicios = signal<Servicio[]>([]);
 
-  obtenerServicios(): Observable<ApiResponse<Servicio[]>> {
-    return this.apiService.get<ApiResponse<Servicio[]>>('/servicios').pipe(
-      tap(response => this.servicios.set(response.data))
+  obtenerServicios(): Observable<Servicio[]> {
+    return this.apiService.get<Servicio[]>('/servicios').pipe(
+      tap(servicios => this.servicios.set(servicios))
     );
   }
 
   obtenerPrecioServicio(servicioId: number, tipoVehiculoId: number): number | null {
     const servicio = this.servicios().find(s => s.id === servicioId);
-    if (!servicio || !servicio.precios_servicios) {
+    if (!servicio || !servicio.precios_servicio) {
       return null;
     }
 
-    const precioServicio = servicio.precios_servicios.find(
+    const precioServicio = servicio.precios_servicio.find(
       ps => ps.tipo_vehiculo_id === tipoVehiculoId
     );
 
-    return precioServicio ? precioServicio.precio : null;
+    return precioServicio ? parseFloat(precioServicio.precio) : null;
   }
 }

@@ -1,8 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, 
-  IonCardTitle, IonCardContent, IonButton, IonIcon, IonSpinner, IonChip
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent,
+  IonCard, IonCardContent,
+  IonButton, IonIcon, IonSpinner, IonChip, IonMenuButton, IonButtons
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { ServicioService } from '../services/servicio.service';
@@ -15,8 +16,9 @@ import { Servicio, PrecioServicio } from '../models/interfaces';
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardHeader, 
-    IonCardTitle, IonCardContent, IonButton, IonIcon, IonSpinner, IonChip
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonCard, IonCardContent,
+    IonButton, IonIcon, IonSpinner, IonChip, IonMenuButton, IonButtons
   ]
 })
 export class ServicesPage implements OnInit {
@@ -45,11 +47,11 @@ export class ServicesPage implements OnInit {
   }
 
   obtenerRangoPrecio(servicio: Servicio): string {
-    if (!servicio.precios_servicios || servicio.precios_servicios.length === 0) {
+    if (!servicio.precios_servicio || servicio.precios_servicio.length === 0) {
       return 'Precio no disponible';
     }
 
-    const precios = servicio.precios_servicios.map(ps => ps.precio);
+    const precios = servicio.precios_servicio.map(ps => parseFloat(ps.precio));
     const min = Math.min(...precios);
     const max = Math.max(...precios);
 

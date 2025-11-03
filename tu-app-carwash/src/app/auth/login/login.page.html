@@ -1,55 +1,52 @@
-<ion-content class="login-content" (ionViewDidEnter)="onPageEnter()">
-    <div class="login-container">
-      <div class="login-header">
-        <div class="logo-icon" aria-hidden="true">🚗</div>
-        <h1 class="app-title">CarWash</h1>
-        <p class="app-subtitle">Servicio Premium de Lavado</p>
-      </div>
-
-      <div class="login-card">
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <div class="form-group">
-            <ion-item lines="none" class="custom-input">
-              <ion-label position="floating">Correo Electrónico</ion-label>
-              <ion-input #emailInput type="email" formControlName="email"></ion-input>
-            </ion-item>
-            <ion-text color="danger" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-              <small class="error-text">Correo electrónico inválido</small>
-            </ion-text>
-          </div>
-
-          <div class="form-group">
-            <ion-item lines="none" class="custom-input">
-              <ion-label position="floating">Contraseña</ion-label>
-              <ion-input type="password" formControlName="password"></ion-input>
-            </ion-item>
-            <ion-text color="danger" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-              <small class="error-text">La contraseña debe tener al menos 6 caracteres</small>
-            </ion-text>
-          </div>
-
-          <ion-button 
-            expand="block" 
-            type="submit" 
-            [disabled]="loginForm.invalid || isLoading" 
-            class="login-button">
-            <span *ngIf="isLoading">Iniciando sesión...</span>
-            <span *ngIf="!isLoading">Iniciar Sesión</span>
-          </ion-button>
-        </form>
-
-        <div class="register-link">
-          <p>¿No tienes cuenta? 
-            <ion-button fill="clear" size="small" class="link"
-              tabindex="-1"
-              (mousedown)="$event.preventDefault()"
-              (click)="navigateToRegister($event)">
-              Crear cuenta
-            </ion-button>
-          </p>
-        </div>
-      </div>
-
-      <ion-toast [isOpen]="!!errorMessage" [message]="errorMessage" duration="3000" color="danger"></ion-toast>
+<ion-content class="login-content">
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo-icon" aria-hidden="true">🚗</div>
+      <h1 class="app-title">CarWash</h1>
+      <p class="app-subtitle">Servicio Premium de Lavado</p>
     </div>
-  </ion-content>
+
+    <div class="login-card">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Correo Electrónico</ion-label>
+            <ion-input type="email" formControlName="email"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            <small class="error-text">Correo electrónico inválido</small>
+          </ion-text>
+        </div>
+
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <small class="error-text">La contraseña debe tener al menos 6 caracteres</small>
+          </ion-text>
+        </div>
+
+        <ion-button
+          expand="block"
+          type="submit"
+          [disabled]="loginForm.invalid || isLoading"
+          class="login-button">
+          <span *ngIf="isLoading">Iniciando sesión...</span>
+          <span *ngIf="!isLoading">Iniciar Sesión</span>
+        </ion-button>
+      </form>
+
+      <div class="register-link">
+        <p>¿No tienes cuenta?
+          <a class="link" (click)="goToRegister()">
+            Crear cuenta
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <ion-toast [isOpen]="!!errorMessage" [message]="errorMessage" duration="3000" color="danger"></ion-toast>
+  </div>
+</ion-content>

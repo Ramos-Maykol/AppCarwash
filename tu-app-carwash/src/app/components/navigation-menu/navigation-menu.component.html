@@ -1,0 +1,33 @@
+<ion-menu contentId="main-content" side="start" menuId="main-menu" class="navigation-menu">
+  <ion-header class="ion-no-border">
+    <ion-toolbar class="menu-header">
+      <ion-title class="menu-title">CarWash</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="menu-content">
+    <ion-list class="menu-list">
+      <ion-item
+        *ngFor="let item of menuItems"
+        button
+        (click)="navigateTo(item.path)"
+        class="menu-item"
+        lines="none">
+        <ion-icon slot="start" [name]="item.icon" class="menu-icon"></ion-icon>
+        <ion-label class="menu-label">
+          <h2>{{ item.title }}</h2>
+          <p>{{ item.description }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <div class="menu-footer">
+      <ion-item button (click)="logout()" class="logout-item" lines="none">
+        <ion-icon slot="start" name="log-out-outline" class="logout-icon"></ion-icon>
+        <ion-label class="logout-label">
+          <h2>Cerrar Sesión</h2>
+        </ion-label>
+      </ion-item>
+    </div>
+  </ion-content>
+</ion-menu>

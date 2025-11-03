@@ -1,6 +1,14 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Mis Vehículos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="irAFormulario()">
+        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -12,27 +20,26 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!isLoading() && vehiculos().length === 0" class="empty-state">
+    <div *ngIf="!isLoading() && (vehiculos() || []).length === 0" class="empty-state">
       <ion-icon name="car-outline" class="empty-icon"></ion-icon>
       <h2>No tienes vehículos registrados</h2>
       <p>Agrega tu primer vehículo para poder hacer reservas</p>
-      <ion-button (click)="abrirModal()" class="add-button">
+      <ion-button (click)="irAFormulario()" class="add-button">
         <ion-icon slot="start" name="add-outline"></ion-icon>
         Agregar Vehículo
       </ion-button>
     </div>
 
     <!-- Vehiculos List -->
-    <div *ngIf="!isLoading() && vehiculos().length > 0" class="vehiculos-list">
-      <ion-card *ngFor="let vehiculo of vehiculos()" class="vehiculo-card">
+    <div *ngIf="!isLoading() && (vehiculos() || []).length > 0" class="vehiculos-list">
+      <ion-card *ngFor="let vehiculo of vehiculos() || []" class="vehiculo-card">
         <ion-card-content>
           <div class="vehiculo-header">
             <div class="vehiculo-icon">
-              <ion-icon name="car-outline"></ion-icon>
+              <ion-icon [name]="getVehiculoIcon(vehiculo.tipo_vehiculo_id)"></ion-icon>
             </div>
             <div class="vehiculo-info">
               <h3>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h3>
-              <p class="tipo">{{ getTipoVehiculoNombre(vehiculo.tipo_vehiculo_id) }}</p>
             </div>
           </div>
 
@@ -48,7 +55,7 @@
           </div>
 
           <div class="vehiculo-actions">
-            <ion-button fill="clear" size="small" (click)="abrirModal(vehiculo)">
+            <ion-button fill="clear" size="small" (click)="irAFormulario(vehiculo)">
               <ion-icon slot="icon-only" name="create-outline"></ion-icon>
             </ion-button>
             <ion-button fill="clear" size="small" color="danger" (click)="eliminarVehiculo(vehiculo.id)">
@@ -59,78 +66,4 @@
       </ion-card>
     </div>
   </div>
-
-  <!-- Floating Action Button -->
-  <ion-fab *ngIf="vehiculos().length > 0" slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button (click)="abrirModal()">
-      <ion-icon name="add-outline"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
-
-  <!-- Modal de Agregar/Editar -->
-  <ion-modal [isOpen]="isModalOpen()" (didDismiss)="cerrarModal()">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>{{ isEditing() ? 'Editar' : 'Agregar' }} Vehículo</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="cerrarModal()">
-              <ion-icon slot="icon-only" name="close-outline"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      
-      <ion-content class="modal-content">
-        <form [formGroup]="vehiculoForm" (ngSubmit)="guardarVehiculo()">
-          <div class="form-group">
-            <ion-item lines="none" class="custom-input">
-              <ion-label position="floating">Tipo de Vehículo</ion-label>
-              <ion-select formControlName="tipo_vehiculo_id" placeholder="Selecciona">
-                <ion-select-option *ngFor="let tipo of tiposVehiculo()" [value]="tipo.id">
-                  {{ tipo.nombre }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-          </div>
-
-          <div class="form-group">
-            <ion-item lines="none" class="custom-input">
-              <ion-label position="floating">Placa</ion-label>
-              <ion-input type="text" formControlName="placa" placeholder="ABC-123"></ion-input>
-            </ion-item>
-          </div>
-
-          <div class="form-group">
-            <ion-item lines="none" class="custom-input">
-              <ion-label position="floating">Marca</ion-label>
-              <ion-input type="text" formControlName="marca" placeholder="Toyota"></ion-input>
-            </ion-item>
-          </div>
-
-          <div class="form-group">
-            <ion-item lines="none" class="custom-input">
-              <ion-label position="floating">Modelo</ion-label>
-              <ion-input type="text" formControlName="modelo" placeholder="Corolla"></ion-input>
-            </ion-item>
-          </div>
-
-          <div class="form-group">
-            <ion-item lines="none" class="custom-input">
-              <ion-label position="floating">Color</ion-label>
-              <ion-input type="text" formControlName="color" placeholder="Blanco"></ion-input>
-            </ion-item>
-          </div>
-
-          <ion-button 
-            expand="block" 
-            type="submit" 
-            [disabled]="vehiculoForm.invalid || isLoading()"
-            class="submit-button">
-            {{ isEditing() ? 'Actualizar' : 'Guardar' }} Vehículo
-          </ion-button>
-        </form>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
 </ion-content>

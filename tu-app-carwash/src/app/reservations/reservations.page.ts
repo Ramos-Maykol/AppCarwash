@@ -1,10 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, 
-  IonBadge, IonButton, IonIcon, IonSpinner, IonSegment, IonSegmentButton,
-  IonLabel, IonRefresher, IonRefresherContent
-} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon, IonCard, IonCardContent, IonBadge, IonSpinner, IonSegment, IonSegmentButton, IonLabel, IonRefresher, IonRefresherContent, IonMenuButton } from '@ionic/angular/standalone';
 import { ReservaService } from '../services/reserva.service';
 import { Reserva } from '../models/interfaces';
 import { Router } from '@angular/router';
@@ -14,24 +10,22 @@ import { Router } from '@angular/router';
   templateUrl: './reservations.page.html',
   styleUrls: ['./reservations.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent,
-    IonBadge, IonButton, IonIcon, IonSpinner, IonSegment, IonSegmentButton,
-    IonLabel, IonRefresher, IonRefresherContent
-  ]
+  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, IonIcon, IonCard, IonCardContent, IonBadge, IonSpinner, IonSegment, IonSegmentButton, IonLabel, IonRefresher, IonRefresherContent, IonMenuButton],
 })
 export class ReservationsPage implements OnInit {
   private reservaService = inject(ReservaService);
   private router = inject(Router);
 
-  reservas = this.reservaService.reservas;
+  get reservas() {
+    return this.reservaService.reservas;
+  }
   isLoading = signal(false);
   selectedFilter = signal<string>('todas');
 
   reservasFiltradas = signal<Reserva[]>([]);
 
   ngOnInit() {
+    this.filtrarReservas(); // Inicializar el filtro con array vacío
     this.cargarReservas();
   }
 
@@ -45,8 +39,14 @@ export class ReservationsPage implements OnInit {
           event.target.complete();
         }
       },
-      error: () => {
+      error: (error) => {
         this.isLoading.set(false);
+        if (error.status === 401) {
+          // Usuario no autenticado, redirigir al login
+          this.router.navigate(['/auth/login']);
+        } else {
+          console.error('Error al cargar reservas:', error);
+        }
         if (event) {
           event.target.complete();
         }
@@ -61,7 +61,7 @@ export class ReservationsPage implements OnInit {
 
   filtrarReservas() {
     const filter = this.selectedFilter();
-    const todas = this.reservas();
+    const todas = this.reservas() || [];
 
     if (filter === 'todas') {
       this.reservasFiltradas.set(todas);

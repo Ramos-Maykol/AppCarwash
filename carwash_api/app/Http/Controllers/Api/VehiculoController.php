@@ -24,9 +24,6 @@ class VehiculoController extends Controller
         return response()->json($vehiculos);
     }
 
-    /**
-     * Almacena un nuevo vehículo para el cliente autenticado.
-     */
     public function store(Request $request)
     {
         $cliente = $request->user()->cliente;
@@ -37,20 +34,18 @@ class VehiculoController extends Controller
         $datosValidados = $request->validate([
             'marca' => 'required|string|max:100',
             'modelo' => 'required|string|max:100',
-            'placa' => ['required', 'string', 'max:20', Rule::unique('vehiculos', 'placa')], // Placa única en todo el sistema
+            'placa' => ['required', 'string', 'max:20', Rule::unique('vehiculos', 'placa')],
             'color' => 'nullable|string|max:50',
-            'tipo_vehiculo_id' => 'required|integer|exists:tipos_vehiculo,id',
+            'tipo_vehiculo_id' => 'required|integer|exists:tipo_vehiculos,id',
         ]);
 
-        // Añadimos el cliente_id a los datos validados para la creación
         $datosValidados['cliente_id'] = $cliente->id;
 
         $vehiculo = Vehiculo::create($datosValidados);
 
-        // Devolvemos el vehículo nuevo con su tipo
         $vehiculo->load('tipoVehiculo');
-        
-        return response()->json($vehiculo, 201); // 201 Creado
+
+        return response()->json($vehiculo, 201);
     }
 
     /**

@@ -16,7 +16,44 @@ class SucursalController extends Controller
     {
         // La lista de sucursales también es útil para el cliente
         // al momento de elegir una, por eso no la protegemos aquí.
-        return response()->json(Sucursal::all());
+        
+        $sucursales = Sucursal::all();
+        
+        // Si no hay sucursales, crear una por defecto
+        if ($sucursales->isEmpty()) {
+            $sucursal = Sucursal::firstOrCreate(
+                ['nombre' => 'Carwash Sede Principal'],
+                [
+                    'direccion' => 'Av. Ejemplo 123, Ciudad',
+                    'telefono' => '987654321',
+                ]
+            );
+            
+            // Crear horarios de trabajo para esta sucursal
+            $diasLaborables = [1, 2, 3, 4, 5]; // Lunes a Viernes
+            foreach ($diasLaborables as $dia) {
+                $sucursal->horariosTrabajo()->firstOrCreate(
+                    ['dia_semana' => $dia],
+                    [
+                        'hora_inicio' => '09:00:00',
+                        'hora_fin' => '17:00:00',
+                    ]
+                );
+            }
+            
+            // Horario de sábado
+            $sucursal->horariosTrabajo()->firstOrCreate(
+                ['dia_semana' => 6],
+                [
+                    'hora_inicio' => '09:00:00',
+                    'hora_fin' => '13:00:00',
+                ]
+            );
+            
+            $sucursales = Sucursal::all();
+        }
+        
+        return response()->json($sucursales);
     }
 
     /**
@@ -25,7 +62,7 @@ class SucursalController extends Controller
     public function store(Request $request)
     {
         $datosValidados = $request->validate([
-            'nombre' => 'required|string|max:255|unique:sucursales,nombre',
+            'nombre' => 'required|string|max:255|unique:sucursals,nombre',
             'direccion' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
         ]);
@@ -51,7 +88,7 @@ class SucursalController extends Controller
     public function update(Request $request, Sucursal $sucursal)
     {
         $datosValidados = $request->validate([
-            'nombre' => ['required', 'string', 'max:255', Rule::unique('sucursales', 'nombre')->ignore($sucursal->id)],
+            'nombre' => ['required', 'string', 'max:255', Rule::unique('sucursals', 'nombre')->ignore($sucursal->id)],
             'direccion' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
         ]);

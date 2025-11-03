@@ -24,7 +24,7 @@ class Servicio extends Model
      * (Uno para Sedan, uno para SUV, uno para Camioneta)
      * (Relación Uno a Muchos)
      */
-    public function preciosServicios()
+    public function preciosServicio()
     {
         return $this->hasMany(PrecioServicio::class, 'servicio_id');
     }

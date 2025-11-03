@@ -9,22 +9,11 @@ class CupoHorario extends Model
 {
     use HasFactory;
 
-    protected $table = 'cupo_horarios';
-
     protected $fillable = [
         'sucursal_id',
         'hora_inicio', // ¡Este es un DateTime completo! ej. "2025-11-04 09:00:00"
         'hora_fin',    // ¡Este es un DateTime completo! ej. "2025-11-04 09:30:00"
         'estado',      // 'disponible', 'reservado', 'bloqueado'
-    ];
-
-    /**
-     * Casts para manejar tipos de datos automáticamente.
-     * ¡Muy importante para las fechas!
-     */
-    protected $casts = [
-        'hora_inicio' => 'datetime',
-        'hora_fin' => 'datetime',
     ];
 
     // --- RELACIONES ---

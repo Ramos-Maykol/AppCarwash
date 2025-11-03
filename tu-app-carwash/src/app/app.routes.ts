@@ -33,13 +33,18 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'reservations',
-    loadComponent: () => import('./reservations/reservations.page').then((m) => m.ReservationsPage),
+    path: 'vehiculos',
+    loadComponent: () => import('./vehiculos/vehiculos.page').then((m) => m.VehiculosPage),
     canActivate: [authGuard],
   },
   {
-    path: 'vehiculos',
-    loadComponent: () => import('./vehiculos/vehiculos.page').then((m) => m.VehiculosPage),
+    path: 'vehiculo-form',
+    loadComponent: () => import('./vehiculo-form/vehiculo-form.page').then((m) => m.VehiculoFormPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'reservations',
+    loadComponent: () => import('./reservations/reservations.page').then((m) => m.ReservationsPage),
     canActivate: [authGuard],
   },
   {

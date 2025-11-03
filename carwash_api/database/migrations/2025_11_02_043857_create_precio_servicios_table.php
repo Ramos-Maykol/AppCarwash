@@ -20,7 +20,7 @@ return new class extends Migration
 
             // Llave Foránea: Para qué tipo de vehículo
             $table->foreignId('tipo_vehiculo_id')
-                  ->constrained('tipos_vehiculo')
+                  ->constrained('tipo_vehiculos')
                   ->onDelete('restrict'); // No borrar tipo si tiene precios asociados
 
             // El precio

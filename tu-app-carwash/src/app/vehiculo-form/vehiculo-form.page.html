@@ -1,0 +1,102 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ isEditing() ? 'Editar' : 'Agregar' }} Vehículo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancelar()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="form-container">
+    <!-- Loading State -->
+    <div *ngIf="isLoading()" class="loading-container">
+      <ion-spinner></ion-spinner>
+      <p>Cargando...</p>
+    </div>
+
+    <!-- Form -->
+    <div>
+      <form [formGroup]="vehiculoForm" (ngSubmit)="guardarVehiculo()">
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Tipo de Vehículo</ion-label>
+            <ion-select formControlName="tipo_vehiculo_id" placeholder="Selecciona">
+              <ion-select-option *ngFor="let tipo of tiposVehiculo() || []" [value]="tipo.id">
+                {{ tipo.nombre }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-text color="danger" *ngIf="vehiculoForm.get('tipo_vehiculo_id')?.invalid && vehiculoForm.get('tipo_vehiculo_id')?.touched">
+            <small class="error-text">Selecciona un tipo de vehículo</small>
+          </ion-text>
+        </div>
+
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Placa</ion-label>
+            <ion-input type="text" formControlName="placa" placeholder="ABC-123"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="vehiculoForm.get('placa')?.invalid && vehiculoForm.get('placa')?.touched">
+            <small class="error-text">La placa debe tener al menos 6 caracteres</small>
+          </ion-text>
+        </div>
+
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Marca</ion-label>
+            <ion-input type="text" formControlName="marca" placeholder="Toyota"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="vehiculoForm.get('marca')?.invalid && vehiculoForm.get('marca')?.touched">
+            <small class="error-text">La marca es requerida</small>
+          </ion-text>
+        </div>
+
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Modelo</ion-label>
+            <ion-input type="text" formControlName="modelo" placeholder="Corolla"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="vehiculoForm.get('modelo')?.invalid && vehiculoForm.get('modelo')?.touched">
+            <small class="error-text">El modelo es requerido</small>
+          </ion-text>
+        </div>
+
+        <div class="form-group">
+          <ion-item lines="none" class="custom-input">
+            <ion-label position="floating">Color</ion-label>
+            <ion-input type="text" formControlName="color" placeholder="Blanco"></ion-input>
+          </ion-item>
+          <ion-text color="danger" *ngIf="vehiculoForm.get('color')?.invalid && vehiculoForm.get('color')?.touched">
+            <small class="error-text">El color es requerido</small>
+          </ion-text>
+        </div>
+
+        <div class="button-group">
+          <ion-button
+            expand="block"
+            type="submit"
+            [disabled]="vehiculoForm.invalid || isSaving()"
+            class="submit-button">
+            <span *ngIf="isSaving()">Guardando...</span>
+            <span *ngIf="!isSaving()">{{ isEditing() ? 'Actualizar' : 'Guardar' }} Vehículo</span>
+          </ion-button>
+
+          <ion-button
+            expand="block"
+            fill="outline"
+            type="button"
+            (click)="cancelar()"
+            class="cancel-button">
+            Cancelar
+          </ion-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ion-content>

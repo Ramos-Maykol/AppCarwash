@@ -41,3 +41,422 @@
 .ion-page[aria-hidden="true"] {
   display: none !important;
 }
+
+/* ===========================================
+   PALETA DE COLORES ELEGANTE - TONOS SOFISTICADOS
+   =========================================== */
+
+/* Variables de colores principales - Paleta Premium */
+:root {
+  /* Colores primarios - Azul elegante */
+  --primary-color: #1e40af;        /* Azul profundo */
+  --primary-light: #3b82f6;        /* Azul brillante */
+  --primary-dark: #1e3a8a;         /* Azul marino */
+  --primary-muted: #dbeafe;        /* Azul muy claro */
+
+  /* Colores secundarios - Verde sofisticado */
+  --secondary-color: #059669;      /* Verde esmeralda */
+  --secondary-light: #10b981;      /* Verde menta */
+  --secondary-dark: #047857;       /* Verde oscuro */
+
+  /* Colores de acento - Dorado elegante */
+  --accent-color: #d4af37;         /* Oro antiguo */
+  --accent-light: #f5e6a3;         /* Oro claro */
+  --accent-dark: #b8860b;          /* Oro oscuro */
+
+  /* Colores neutros - Grises premium */
+  --neutral-50: #fafafa;           /* Blanco casi puro */
+  --neutral-100: #f5f5f5;          /* Gris perla */
+  --neutral-200: #e5e7eb;          /* Gris plata */
+  --neutral-300: #d1d5db;          /* Gris medio */
+  --neutral-400: #9ca3af;          /* Gris plomo */
+  --neutral-500: #6b7280;          /* Gris acero */
+  --neutral-600: #4b5563;          /* Gris carbón */
+  --neutral-700: #374151;          /* Gris antracita */
+  --neutral-800: #1f2937;          /* Gris noche */
+  --neutral-900: #111827;          /* Gris ébano */
+
+  /* Colores de estado - Más elegantes */
+  --success-color: #059669;        /* Verde esmeralda */
+  --success-light: #d1fae5;        /* Verde menta claro */
+  --warning-color: #d97706;        /* Ámbar elegante */
+  --warning-light: #fef3c7;        /* Ámbar claro */
+  --error-color: #dc2626;          /* Rojo burdeos */
+  --error-light: #fecaca;          /* Rojo claro */
+
+  /* Fondos y superficies - Más premium */
+  --background-primary: #ffffff;   /* Blanco puro */
+  --background-secondary: #f8fafc; /* Gris perla */
+  --background-tertiary: #f5f5f5;  /* Gris perla claro */
+  --background-accent: #ffffff;    /* Blanco puro para acentos */
+  --surface-primary: #ffffff;      /* Blanco para cards */
+  --surface-secondary: #f8fafc;    /* Gris perla */
+  --surface-accent: #ffffff;       /* Blanco puro */
+
+  /* Bordes y sombras - Más elegantes */
+  --border-color: #e5e7eb;         /* Gris plata */
+  --border-light: #f3f4f6;         /* Gris muy claro */
+  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-heavy: 0 10px 15px rgba(0, 0, 0, 0.05);
+
+  /* Espaciado consistente - Más generoso */
+  --spacing-xs: 0.25rem;    /* 4px */
+  --spacing-sm: 0.5rem;     /* 8px */
+  --spacing-md: 0.75rem;    /* 12px */
+  --spacing-lg: 1rem;       /* 16px */
+  --spacing-xl: 1.5rem;     /* 24px */
+  --spacing-2xl: 2rem;      /* 32px */
+  --spacing-3xl: 3rem;      /* 48px */
+
+  /* Bordes redondeados - Más sofisticados */
+  --border-radius-sm: 0.375rem;  /* 6px */
+  --border-radius-md: 0.5rem;    /* 8px */
+  --border-radius-lg: 0.75rem;   /* 12px */
+  --border-radius-xl: 1rem;      /* 16px */
+  --border-radius-2xl: 1.5rem;   /* 24px */
+}
+
+/* ===========================================
+   ESTILOS GLOBALES ELEGANTE
+   =========================================== */
+
+/* Tipografía mejorada */
+ion-title {
+  font-weight: 600;
+  color: var(--neutral-800);
+}
+
+ion-card {
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-color);
+  background: var(--surface-primary);
+  margin: var(--spacing-md) 0;
+}
+
+ion-button {
+  border-radius: var(--border-radius-lg);
+  font-weight: 500;
+  text-transform: none;
+  height: 44px;
+  --border-radius: var(--border-radius-lg);
+}
+
+/* Botones primarios */
+ion-button[color="primary"] {
+  --background: var(--primary-color);
+  --color: white;
+}
+
+ion-button[color="primary"]:hover {
+  --background: var(--primary-dark);
+}
+
+/* Botones de éxito */
+ion-button[color="success"] {
+  --background: var(--success-color);
+  --color: white;
+}
+
+ion-button[color="success"]:hover {
+  --background: #059669;
+}
+
+/* Botones de peligro */
+ion-button[color="danger"] {
+  --background: var(--error-color);
+  --color: white;
+}
+
+ion-button[color="danger"]:hover {
+  --background: #dc2626;
+}
+
+/* Chips/Badges */
+ion-badge {
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Segment buttons */
+ion-segment-button {
+  --background: transparent;
+  --color: var(--neutral-600);
+  --background-checked: var(--primary-color);
+  --color-checked: white;
+  --border-radius: var(--border-radius-md);
+}
+
+/* Toolbars */
+ion-toolbar {
+  --background: var(--surface-primary);
+  --color: var(--neutral-800);
+  --border-color: var(--border-color);
+}
+
+/* Content */
+ion-content {
+  --background: var(--background-secondary);
+}
+
+/* Inputs */
+ion-input, ion-textarea, ion-select {
+  --background: var(--surface-primary);
+  --border-color: var(--border-color);
+  --border-radius: var(--border-radius-lg);
+  --padding-start: var(--spacing-lg);
+  --padding-end: var(--spacing-lg);
+}
+
+/* Iconos */
+ion-icon {
+  color: var(--neutral-600);
+}
+
+/* Estados de carga */
+ion-spinner {
+  color: var(--primary-color);
+}
+
+/* Animaciones suaves */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Scrollbars elegantes */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neutral-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-300);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-400);
+}
+
+/* ===========================================
+   MENÚ DE NAVEGACIÓN
+   =========================================== */
+
+ion-menu {
+  --width: 280px;
+  --background: var(--surface-primary);
+  --border-radius: var(--border-radius-xl);
+}
+
+/* Animación suave para el menú */
+ion-menu::part(container) {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ===========================================
+   BOTÓN DE MENÚ MÁS VISIBLE
+   =========================================== */
+
+ion-menu-button {
+  --color: var(--primary-color);
+  --background: transparent;
+  --padding-start: var(--spacing-md);
+  --padding-end: var(--spacing-md);
+  font-size: 1.25rem;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+ion-menu-button:hover {
+  --background: var(--neutral-50);
+  border-radius: var(--border-radius-md);
+}
+
+/* ===========================================
+   BOTONES DE NAVEGACIÓN GLOBAL
+   =========================================== */
+
+.back-button {
+  --color: var(--primary-color);
+  --background: transparent;
+}
+
+.back-button:hover {
+  --background: var(--neutral-50);
+}
+
+/* ===========================================
+   ESTADOS DE CARGA Y MENSAJES
+   =========================================== */
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl);
+  gap: var(--spacing-lg);
+}
+
+.loading-container ion-spinner {
+  --color: var(--primary-color);
+}
+
+.loading-container p {
+  color: var(--neutral-600);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* ===========================================
+   MENSAJES VACÍOS
+   =========================================== */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  text-align: center;
+  gap: var(--spacing-lg);
+}
+
+.empty-state ion-icon {
+  font-size: 3rem;
+  color: var(--neutral-400);
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-state h2 {
+  color: var(--neutral-700);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.empty-state p {
+  color: var(--neutral-600);
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.empty-button {
+  --background: var(--primary-color);
+  --color: white;
+  margin-top: var(--spacing-lg);
+}
+
+/* ===========================================
+   BADGES Y ESTADOS
+   =========================================== */
+
+.estado-pendiente {
+  --background: var(--warning-color);
+  --color: white;
+}
+
+.estado-confirmada {
+  --background: var(--primary-color);
+  --color: white;
+}
+
+.estado-proceso {
+  --background: var(--neutral-500);
+  --color: white;
+}
+
+.estado-completada {
+  --background: var(--success-color);
+  --color: white;
+}
+
+.estado-cancelada {
+  --background: var(--error-color);
+  --color: white;
+}
+
+/* ===========================================
+   CARDS ELEGANTE
+   =========================================== */
+
+.card-elegant {
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-color);
+  background: var(--surface-primary);
+  transition: all 0.2s ease;
+}
+
+.card-elegant:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+/* ===========================================
+   GRIDS RESPONSIVOS
+   =========================================== */
+
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg);
+}
+
+.grid-responsive-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+/* ===========================================
+   UTILIDADES ADICIONALES
+   =========================================== */
+
+.text-center {
+  text-align: center;
+}
+
+.text-primary {
+  color: var(--primary-color);
+}
+
+.text-success {
+  color: var(--success-color);
+}
+
+.text-error {
+  color: var(--error-color);
+}
+
+.text-warning {
+  color: var(--warning-color);
+}
+
+.bg-light {
+  background: var(--neutral-50);
+}
+
+.shadow-soft {
+  box-shadow: var(--shadow-light);
+}
+
+.shadow-medium {
+  box-shadow: var(--shadow-medium);
+}
+
+.rounded {
+  border-radius: var(--border-radius-lg);
+}
+
+.rounded-xl {
+  border-radius: var(--border-radius-xl);
+}

@@ -17,7 +17,7 @@ class CupoHorarioController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'sucursal_id' => 'required|integer|exists:sucursales,id',
+            'sucursal_id' => 'required|integer|exists:sucursals,id',
             'fecha' => 'required|date_format:Y-m-d',
         ]);
 
@@ -37,7 +37,7 @@ class CupoHorarioController extends Controller
     public function store(Request $request)
     {
         $datosValidados = $request->validate([
-            'sucursal_id' => 'required|integer|exists:sucursales,id',
+            'sucursal_id' => 'required|integer|exists:sucursals,id',
             'hora_inicio' => 'required|date_format:Y-m-d H:i:s|unique:cupos_horarios,hora_inicio,NULL,id,sucursal_id,'.$request->sucursal_id,
             'hora_fin' => 'required|date_format:Y-m-d H:i:s|after:hora_inicio',
             'estado' => 'required|string|in:disponible,reservado,bloqueado',

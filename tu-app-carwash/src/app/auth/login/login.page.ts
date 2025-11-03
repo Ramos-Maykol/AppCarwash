@@ -1,8 +1,8 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { IonContent, IonInput, IonButton, IonItem, IonLabel, IonText, IonToast, IonIcon, IonRouterLink } from '@ionic/angular/standalone';
-import { Router, RouterLink } from '@angular/router';
+import { IonContent, IonInput, IonButton, IonItem, IonLabel, IonText, IonToast } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -10,13 +10,12 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonInput, IonButton, IonItem, IonLabel, IonText, IonToast, IonIcon, IonRouterLink, CommonModule, ReactiveFormsModule, RouterLink]
+  imports: [IonContent, IonInput, IonButton, IonItem, IonLabel, IonText, IonToast, CommonModule, ReactiveFormsModule]
 })
 export class LoginPage {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
-  @ViewChild('emailInput', { static: false }) emailInput!: IonInput;
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -25,11 +24,6 @@ export class LoginPage {
 
   isLoading = false;
   errorMessage = '';
-
-  ionViewDidEnter() {
-    // Al entrar, mover el foco al campo email para que ningún enlace previo retenga foco
-    setTimeout(() => this.emailInput?.setFocus(), 0);
-  }
 
   onSubmit() {
     if (this.loginForm.valid) {
@@ -51,17 +45,5 @@ export class LoginPage {
 
   goToRegister() {
     this.router.navigate(['/auth/register']);
-  }
-
-  onNavLinkClick(event?: Event) {
-    const el = (event?.currentTarget as HTMLElement) || (document.activeElement as HTMLElement | null);
-    if (el && typeof el.blur === 'function') {
-      el.blur();
-    }
-  }
-
-  navigateToRegister(event?: Event) {
-    this.onNavLinkClick(event);
-    setTimeout(() => this.router.navigate(['/auth/register']), 0);
   }
 }

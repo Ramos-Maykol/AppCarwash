@@ -24,7 +24,16 @@ import {
   logOutOutline,
   settingsOutline,
   chevronForwardOutline,
-  closeCircleOutline
+  closeCircleOutline,
+  // Agregando iconos faltantes
+  person,
+  water,
+  calendar,
+  addCircle,
+  addCircleOutline,
+  home,
+  homeOutline,
+  bicycleOutline
 } from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
@@ -52,7 +61,16 @@ export function initializeIcons() {
       'log-out-outline': logOutOutline,
       'settings-outline': settingsOutline,
       'chevron-forward-outline': chevronForwardOutline,
-      'close-circle-outline': closeCircleOutline
+      'close-circle-outline': closeCircleOutline,
+      // Agregando iconos faltantes
+      'person': person,
+      'water': water,
+      'calendar': calendar,
+      'add-circle': addCircle,
+      'add-circle-outline': addCircleOutline,
+      'home': home,
+      'home-outline': homeOutline,
+      'bicycle-outline': bicycleOutline
     });
     return Promise.resolve();
   };

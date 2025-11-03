@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { ApiService } from './api.service';
-import { Reserva, CupoHorario, Sucursal, CrearReservaRequest, ApiResponse } from '../models/interfaces';
+import { Reserva, CupoHorario, Sucursal, CrearReservaRequest, CrearReservaResponse, ApiResponse } from '../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -13,33 +13,33 @@ export class ReservaService {
   sucursales = signal<Sucursal[]>([]);
   cuposDisponibles = signal<CupoHorario[]>([]);
 
-  obtenerSucursales(): Observable<ApiResponse<Sucursal[]>> {
-    return this.apiService.get<ApiResponse<Sucursal[]>>('/sucursales').pipe(
-      tap(response => this.sucursales.set(response.data))
+  obtenerSucursales(): Observable<Sucursal[]> {
+    return this.apiService.get<Sucursal[]>('/sucursales').pipe(
+      tap(sucursales => this.sucursales.set(sucursales))
     );
   }
 
-  obtenerCuposDisponibles(sucursalId: number, fecha: string): Observable<ApiResponse<CupoHorario[]>> {
-    return this.apiService.get<ApiResponse<CupoHorario[]>>('/cupos-disponibles', {
+  obtenerCuposDisponibles(sucursalId: number, fecha: string): Observable<CupoHorario[]> {
+    return this.apiService.get<CupoHorario[]>('/cupos-disponibles', {
       sucursal_id: sucursalId,
       fecha: fecha
     }).pipe(
-      tap(response => this.cuposDisponibles.set(response.data))
+      tap(cupos => this.cuposDisponibles.set(cupos))
     );
   }
 
-  crearReserva(reserva: CrearReservaRequest): Observable<ApiResponse<Reserva>> {
-    return this.apiService.post<ApiResponse<Reserva>>('/reservas', reserva).pipe(
+  crearReserva(reserva: CrearReservaRequest): Observable<CrearReservaResponse> {
+    return this.apiService.post<CrearReservaResponse>('/reservas', reserva).pipe(
       tap(response => {
         const current = this.reservas();
-        this.reservas.set([response.data, ...current]);
+        this.reservas.set([response.reserva, ...current]);
       })
     );
   }
 
-  obtenerMisReservas(): Observable<ApiResponse<Reserva[]>> {
-    return this.apiService.get<ApiResponse<Reserva[]>>('/mis-reservas').pipe(
-      tap(response => this.reservas.set(response.data))
+  obtenerMisReservas(): Observable<Reserva[]> {
+    return this.apiService.get<Reserva[]>('/mis-reservas').pipe(
+      tap(reservas => this.reservas.set(reservas))
     );
   }
 

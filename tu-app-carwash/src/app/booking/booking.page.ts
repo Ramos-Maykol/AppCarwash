@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { 
-  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, 
-  IonButton, IonSelect, IonSelectOption, IonItem, IonLabel, IonText,
-  IonIcon, IonSpinner, IonChip, IonTextarea, IonDatetime, IonRadioGroup,
-  IonRadio, IonButtons, IonBackButton
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent,
+  IonButton, IonIcon, IonSpinner, IonChip, IonTextarea,
+  IonDatetime, IonRadioGroup, IonRadio, IonButtons,
+  IonItem, IonMenuButton
 } from '@ionic/angular/standalone';
 import { ServicioService } from '../services/servicio.service';
 import { VehiculoService } from '../services/vehiculo.service';
@@ -18,11 +19,11 @@ import { Servicio, Vehiculo, Sucursal, CupoHorario } from '../models/interfaces'
   styleUrls: ['./booking.page.scss'],
   standalone: true,
   imports: [
-    CommonModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent,
-    IonButton, IonSelect, IonSelectOption, IonItem, IonLabel, IonText,
-    IonIcon, IonSpinner, IonChip, IonTextarea, IonDatetime, IonRadioGroup,
-    IonRadio, IonButtons, IonBackButton
+    CommonModule, FormsModule,
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonButton, IonIcon, IonSpinner, IonChip, IonTextarea,
+    IonDatetime, IonRadioGroup, IonRadio, IonButtons,
+    IonItem, IonMenuButton
   ]
 })
 export class BookingPage implements OnInit {
@@ -49,15 +50,19 @@ export class BookingPage implements OnInit {
   selectedCupoId = signal<number | null>(null);
   observaciones = signal<string>('');
 
+  // Date limits (cached to avoid ExpressionChangedAfterItHasBeenCheckedError)
+  minDate: string = '';
+  maxDate: string = '';
+
   // Computed
   selectedServicio = computed(() => {
     const id = this.selectedServicioId();
-    return this.servicios().find(s => s.id === id) || null;
+    return (this.servicios() || []).find(s => s.id === id) || null;
   });
 
   selectedVehiculo = computed(() => {
     const id = this.selectedVehiculoId();
-    return this.vehiculos().find(v => v.id === id) || null;
+    return (this.vehiculos() || []).find(v => v.id === id) || null;
   });
 
   precioCalculado = computed(() => {
@@ -77,7 +82,9 @@ export class BookingPage implements OnInit {
       case 1:
         return this.selectedServicioId() !== null && this.selectedVehiculoId() !== null;
       case 2:
-        return this.selectedSucursalId() !== null && this.selectedFecha() !== '';
+        const sucursalOk = this.selectedSucursalId() !== null && this.selectedSucursalId() !== undefined;
+        const fechaOk = this.selectedFecha() !== '' && this.selectedFecha() !== null && this.selectedFecha() !== undefined;
+        return sucursalOk && fechaOk;
       case 3:
         return this.selectedCupoId() !== null;
       case 4:
@@ -88,6 +95,14 @@ export class BookingPage implements OnInit {
   });
 
   ngOnInit() {
+    // Initialize date limits once to avoid ExpressionChangedAfterItHasBeenCheckedError
+    const today = new Date();
+    this.minDate = today.toISOString();
+    
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    this.maxDate = maxDate.toISOString();
+
     this.cargarDatos();
     
     // Check if coming from services page with servicioId
@@ -102,6 +117,7 @@ export class BookingPage implements OnInit {
 
   cargarDatos() {
     this.isLoading.set(true);
+
     this.servicioService.obtenerServicios().subscribe();
     this.vehiculoService.obtenerMisVehiculos().subscribe();
     this.reservaService.obtenerSucursales().subscribe({
@@ -110,22 +126,35 @@ export class BookingPage implements OnInit {
     });
   }
 
+  onSucursalChange(event: any) {
+    this.selectedSucursalId.set(event.detail.value);
+    
+    // Si ya hay fecha seleccionada, cargar cupos
+    if (this.selectedFecha() && this.selectedSucursalId()) {
+      this.cargarCuposDisponibles();
+    }
+  }
+
   onFechaChange(event: any) {
     const fecha = event.detail.value?.split('T')[0];
-    if (fecha && this.selectedSucursalId()) {
+    
+    if (fecha) {
       this.selectedFecha.set(fecha);
-      this.cargarCuposDisponibles();
+      
+      // Si ya hay sucursal seleccionada, cargar cupos
+      if (this.selectedSucursalId()) {
+        this.cargarCuposDisponibles();
+      }
     }
   }
 
   cargarCuposDisponibles() {
     const sucursalId = this.selectedSucursalId();
-    const fecha = this.selectedFecha();
     
-    if (!sucursalId || !fecha) return;
+    if (!sucursalId || !this.selectedFecha()) return;
 
     this.isLoading.set(true);
-    this.reservaService.obtenerCuposDisponibles(sucursalId, fecha).subscribe({
+    this.reservaService.obtenerCuposDisponibles(sucursalId, this.selectedFecha()).subscribe({
       next: () => this.isLoading.set(false),
       error: () => this.isLoading.set(false)
     });
@@ -155,15 +184,14 @@ export class BookingPage implements OnInit {
     
     const reservaData = {
       vehiculo_id: this.selectedVehiculoId()!,
-      servicio_id: this.selectedServicioId()!,
+      precio_servicio_id: this.selectedServicioId()!,
       cupo_horario_id: this.selectedCupoId()!,
-      observaciones: this.observaciones() || undefined
     };
 
     this.reservaService.crearReserva(reservaData).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.router.navigate(['/reservations']);
+        this.router.navigate(['/reservations']); // ✅ Ahora la ruta existe
       },
       error: () => {
         this.isLoading.set(false);
@@ -172,34 +200,31 @@ export class BookingPage implements OnInit {
     });
   }
 
-  getMinDate(): string {
-    const today = new Date();
-    return today.toISOString();
-  }
-
-  getMaxDate(): string {
-    const maxDate = new Date();
-    maxDate.setDate(maxDate.getDate() + 30);
-    return maxDate.toISOString();
-  }
-
   formatHora(fechaHora: string): string {
     const date = new Date(fechaHora);
     return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   }
 
   getTipoVehiculoNombre(tipoId: number): string {
-    const vehiculo = this.vehiculos().find(v => v.id === this.selectedVehiculoId());
+    const vehiculo = (this.vehiculos() || []).find(v => v.id === this.selectedVehiculoId());
     return vehiculo?.tipo_vehiculo?.nombre || '';
   }
 
   getSelectedCupoFechaHora(): string {
-    const cupo = this.cuposDisponibles().find(c => c.id === this.selectedCupoId());
-    return cupo?.fecha_hora || '';
+    const cupo = (this.cuposDisponibles() || []).find(c => c.id === this.selectedCupoId());
+    return cupo?.hora_inicio || '';
   }
 
   getSelectedSucursalNombre(): string {
-    const sucursal = this.sucursales().find(s => s.id === this.selectedSucursalId());
+    const sucursal = (this.sucursales() || []).find(s => s.id === this.selectedSucursalId());
     return sucursal?.nombre || '';
+  }
+
+  goBack() {
+    this.router.navigate(['/home']);
+  }
+
+  goToVehiculos() {
+    this.router.navigate(['/vehiculos']);
   }
 }

@@ -1,9 +1,14 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Mis Reservas</ion-title>
-    <ion-button slot="end" fill="clear" (click)="nuevaReserva()">
-      <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-    </ion-button>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="nuevaReserva()">
+        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -36,7 +41,7 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!isLoading() && reservasFiltradas().length === 0" class="empty-state">
+    <div *ngIf="!isLoading() && (reservasFiltradas() || []).length === 0" class="empty-state">
       <ion-icon name="calendar-outline" class="empty-icon"></ion-icon>
       <h2>No hay reservas</h2>
       <p *ngIf="selectedFilter() === 'todas'">Aún no has realizado ninguna reserva</p>
@@ -50,8 +55,8 @@
     </div>
 
     <!-- Reservations List -->
-    <div *ngIf="!isLoading() && reservasFiltradas().length > 0" class="reservations-list">
-      <ion-card *ngFor="let reserva of reservasFiltradas()" class="reservation-card">
+    <div *ngIf="!isLoading() && (reservasFiltradas() || []).length > 0" class="reservations-list">
+      <ion-card *ngFor="let reserva of reservasFiltradas() || []" class="reservation-card">
         <ion-card-content>
           <div class="reservation-header">
             <div class="reservation-info">
@@ -62,7 +67,7 @@
             </div>
             <div class="reservation-price">
               <ion-icon name="cash-outline"></ion-icon>
-              <span>${{ reserva.precio_final?.toFixed(2) }}</span>
+              <span>${{ reserva.precio_final | number:'1.2-2' }}</span>
             </div>
           </div>
 
@@ -70,11 +75,11 @@
             <div class="detail-row">
               <div class="detail-item">
                 <ion-icon name="calendar-outline"></ion-icon>
-                <span>{{ formatearFecha(reserva.cupo_horario?.fecha_hora || '') }}</span>
+                <span>{{ formatearFecha(reserva.cupo_horario?.hora_inicio || '') }}</span>
               </div>
               <div class="detail-item">
                 <ion-icon name="time-outline"></ion-icon>
-                <span>{{ formatearHora(reserva.cupo_horario?.fecha_hora || '') }}</span>
+                <span>{{ formatearHora(reserva.cupo_horario?.hora_inicio || '') }}</span>
               </div>
             </div>
 

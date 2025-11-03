@@ -64,7 +64,7 @@ class ReservaController extends Controller
                 'required',
                 'integer',
                 // Validar que el cupo exista Y que esté 'disponible'
-                Rule::exists('cupos_horarios', 'id')->where('estado', 'disponible')
+                Rule::exists('cupo_horarios', 'id')->where('estado', 'disponible')
             ],
             'vehiculo_id' => [
                 'required',
@@ -72,7 +72,7 @@ class ReservaController extends Controller
                 // Validar que el vehículo exista Y que pertenezca al cliente autenticado
                 Rule::exists('vehiculos', 'id')->where('cliente_id', $cliente->id)
             ],
-            'precio_servicio_id' => 'required|integer|exists:precios_servicios,id',
+            'precio_servicio_id' => 'required|integer|exists:precio_servicios,id',
         ]);
 
         // 3. Obtener los modelos que necesitamos
@@ -98,7 +98,7 @@ class ReservaController extends Controller
                 'cliente_id' => $cliente->id,
                 'cupo_horario_id' => $cupo->id,
                 'vehiculo_id' => $datosValidados['vehiculo_id'],
-                'precio_servicio_id' => $precioServicio->id,
+                'precios_servicios_id' => $precioServicio->id, // ✅ Campo correcto
                 'precio_final' => $precioServicio->precio, // Guardamos el precio en el momento
                 'estado' => 'confirmada', // O 'pendiente' si requiere aprobación
             ]);

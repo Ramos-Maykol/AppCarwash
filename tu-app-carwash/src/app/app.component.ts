@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { Router, NavigationStart } from '@angular/router';
+import { NavigationMenuComponent } from './components/navigation-menu/navigation-menu.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
-  imports: [IonApp, IonRouterOutlet],
+  imports: [IonApp, IonRouterOutlet, NavigationMenuComponent],
 })
 export class AppComponent {
   private router = inject(Router);

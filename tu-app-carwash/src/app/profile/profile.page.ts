@@ -1,8 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, 
-  IonButton, IonIcon, IonList, IonItem, IonLabel, IonAvatar
+import {
+  IonHeader, IonToolbar, IonTitle, IonContent,
+  IonButton, IonIcon, IonMenuButton, IonButtons
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -14,8 +14,8 @@ import { AuthService } from '../services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent,
-    IonButton, IonIcon, IonList, IonItem, IonLabel, IonAvatar
+    IonHeader, IonToolbar, IonTitle, IonContent,
+    IonButton, IonIcon, IonMenuButton, IonButtons
   ]
 })
 export class ProfilePage implements OnInit {

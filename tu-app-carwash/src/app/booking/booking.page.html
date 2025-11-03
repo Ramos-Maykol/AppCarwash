@@ -1,9 +1,14 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Nueva Reserva</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="goBack()">
+        <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -54,18 +59,32 @@
       <!-- Vehicle Selection -->
       <div class="section">
         <h3 class="section-title">Vehículo</h3>
-        <div *ngIf="vehiculos().length === 0" class="empty-message">
+        <div *ngIf="(vehiculos() || []).length === 0" class="empty-message">
           <p>No tienes vehículos registrados</p>
-          <ion-button size="small" routerLink="/vehiculos">Agregar Vehículo</ion-button>
+          <ion-button size="small" (click)="goToVehiculos()">Crear Vehículo</ion-button>
         </div>
-        <div class="selection-grid">
-          <div *ngFor="let vehiculo of vehiculos()" 
-               class="selection-card"
-               [class.selected]="selectedVehiculoId() === vehiculo.id"
-               (click)="selectedVehiculoId.set(vehiculo.id)">
-            <ion-icon name="car-outline"></ion-icon>
-            <h4>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h4>
-            <p>{{ vehiculo.placa }}</p>
+        <div class="vehicle-section">
+          <div class="selection-grid" *ngIf="(vehiculos() || []).length > 0">
+            <div *ngFor="let vehiculo of vehiculos()" 
+                 class="selection-card"
+                 [class.selected]="selectedVehiculoId() === vehiculo.id"
+                 (click)="selectedVehiculoId.set(vehiculo.id)">
+              <ion-icon name="car-outline"></ion-icon>
+              <h4>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h4>
+              <p>{{ vehiculo.placa }}</p>
+            </div>
+          </div>
+
+          <!-- Add Vehicle Button -->
+          <div class="add-vehicle-section">
+            <ion-button
+              fill="outline"
+              size="default"
+              (click)="goToVehiculos()"
+              class="add-vehicle-button">
+              <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+              Añadir Nuevo Vehículo
+            </ion-button>
           </div>
         </div>
       </div>
@@ -78,37 +97,98 @@
           <span class="price-value">${{ precioCalculado()?.toFixed(2) }}</span>
         </div>
       </div>
+
+      <!-- Navigation Buttons -->
+      <div class="navigation-buttons">
+        <ion-button
+          *ngIf="currentStep() > 1"
+          fill="outline"
+          (click)="previousStep()"
+          class="nav-button">
+          <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+          Anterior
+        </ion-button>
+        
+        <ion-button
+          *ngIf="currentStep() < 4"
+          [disabled]="!canContinue() || isLoading()"
+          (click)="nextStep()"
+          class="nav-button primary">
+          Siguiente
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button
+          *ngIf="currentStep() === 4"
+          [disabled]="!canContinue() || isLoading()"
+          (click)="confirmarReserva()"
+          class="nav-button primary">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          Confirmar Reserva
+        </ion-button>
+      </div>
     </div>
 
     <!-- Step 2: Select Branch and Date -->
     <div *ngIf="currentStep() === 2" class="step-content">
       <h2 class="step-title">Selecciona Sucursal y Fecha</h2>
       
-      <!-- Branch Selection -->
-      <div class="section">
-        <h3 class="section-title">Sucursal</h3>
-        <ion-radio-group [value]="selectedSucursalId()" (ionChange)="selectedSucursalId.set($event.detail.value)">
-          <div *ngFor="let sucursal of sucursales()" class="radio-card">
-            <ion-radio [value]="sucursal.id"></ion-radio>
-            <div class="radio-content">
-              <h4>{{ sucursal.nombre }}</h4>
-              <p><ion-icon name="location-outline"></ion-icon> {{ sucursal.direccion }}</p>
-            </div>
-          </div>
-        </ion-radio-group>
-      </div>
-
-      <!-- Date Selection -->
+      <!-- Date Selection First -->
       <div class="section">
         <h3 class="section-title">Fecha</h3>
         <ion-datetime 
           presentation="date"
           [value]="selectedFecha()"
-          [min]="getMinDate()"
-          [max]="getMaxDate()"
+          [min]="minDate"
+          [max]="maxDate"
           (ionChange)="onFechaChange($event)"
           class="date-picker">
         </ion-datetime>
+      </div>
+
+      <!-- Branch Selection -->
+      <div class="section">
+        <h3 class="section-title">Sucursal</h3>
+        <ion-radio-group [value]="selectedSucursalId()" (ionChange)="onSucursalChange($event)">
+          <ion-item *ngFor="let sucursal of sucursales() || []" lines="none" class="radio-card">
+            <ion-radio [value]="sucursal.id" justify="start" labelPlacement="end">
+              <div class="radio-content">
+                <h4>{{ sucursal.nombre }}</h4>
+                <p><ion-icon name="location-outline"></ion-icon> {{ sucursal.direccion }}</p>
+              </div>
+            </ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </div>
+      
+      <!-- Navigation Buttons -->
+      <div class="navigation-buttons">
+        <ion-button
+          *ngIf="currentStep() > 1"
+          fill="outline"
+          (click)="previousStep()"
+          class="nav-button">
+          <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+          Anterior
+        </ion-button>
+        
+        <ion-button
+          *ngIf="currentStep() < 4"
+          [disabled]="!canContinue() || isLoading()"
+          (click)="nextStep()"
+          class="nav-button primary">
+          Siguiente
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button
+          *ngIf="currentStep() === 4"
+          [disabled]="!canContinue() || isLoading()"
+          (click)="confirmarReserva()"
+          class="nav-button primary">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          Confirmar Reserva
+        </ion-button>
       </div>
     </div>
 
@@ -121,22 +201,52 @@
         <p>Cargando horarios disponibles...</p>
       </div>
 
-      <div *ngIf="!isLoading() && cuposDisponibles().length === 0" class="empty-state">
+      <div *ngIf="!isLoading() && (cuposDisponibles() || []).length === 0" class="empty-state">
         <ion-icon name="calendar-outline"></ion-icon>
         <p>No hay horarios disponibles para esta fecha</p>
       </div>
 
-      <div *ngIf="!isLoading() && cuposDisponibles().length > 0" class="time-slots">
+      <div *ngIf="!isLoading() && (cuposDisponibles() || []).length > 0" class="time-slots">
         <div *ngFor="let cupo of cuposDisponibles()" 
              class="time-slot"
              [class.selected]="selectedCupoId() === cupo.id"
              (click)="selectedCupoId.set(cupo.id)">
           <ion-icon name="time-outline"></ion-icon>
-          <span>{{ formatHora(cupo.fecha_hora) }}</span>
+          <span>{{ formatHora(cupo.hora_inicio) }}</span>
           <ion-chip *ngIf="selectedCupoId() === cupo.id" class="selected-chip">
             <ion-icon name="checkmark-circle-outline"></ion-icon>
           </ion-chip>
         </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="navigation-buttons">
+        <ion-button
+          *ngIf="currentStep() > 1"
+          fill="outline"
+          (click)="previousStep()"
+          class="nav-button">
+          <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+          Anterior
+        </ion-button>
+        
+        <ion-button
+          *ngIf="currentStep() < 4"
+          [disabled]="!canContinue() || isLoading()"
+          (click)="nextStep()"
+          class="nav-button primary">
+          Siguiente
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
+
+        <ion-button
+          *ngIf="currentStep() === 4"
+          [disabled]="!canContinue() || isLoading()"
+          (click)="confirmarReserva()"
+          class="nav-button primary">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          Confirmar Reserva
+        </ion-button>
       </div>
     </div>
 
@@ -205,36 +315,36 @@
           class="custom-textarea">
         </ion-textarea>
       </div>
-    </div>
 
-    <!-- Navigation Buttons -->
-    <div class="navigation-buttons">
-      <ion-button
-        *ngIf="currentStep() > 1"
-        fill="outline"
-        (click)="previousStep()"
-        class="nav-button">
-        <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
-        Anterior
-      </ion-button>
-      
-      <ion-button
-        *ngIf="currentStep() < 4"
-        [disabled]="!canContinue() || isLoading()"
-        (click)="nextStep()"
-        class="nav-button primary">
-        Siguiente
-        <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
-      </ion-button>
+      <!-- Navigation Buttons -->
+      <div class="navigation-buttons">
+        <ion-button
+          *ngIf="currentStep() > 1"
+          fill="outline"
+          (click)="previousStep()"
+          class="nav-button">
+          <ion-icon slot="start" name="arrow-back-outline"></ion-icon>
+          Anterior
+        </ion-button>
+        
+        <ion-button
+          *ngIf="currentStep() < 4"
+          [disabled]="!canContinue() || isLoading()"
+          (click)="nextStep()"
+          class="nav-button primary">
+          Siguiente
+          <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+        </ion-button>
 
-      <ion-button
-        *ngIf="currentStep() === 4"
-        [disabled]="!canContinue() || isLoading()"
-        (click)="confirmarReserva()"
-        class="nav-button primary">
-        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
-        Confirmar Reserva
-      </ion-button>
+        <ion-button
+          *ngIf="currentStep() === 4"
+          [disabled]="!canContinue() || isLoading()"
+          (click)="confirmarReserva()"
+          class="nav-button primary">
+          <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+          Confirmar Reserva
+        </ion-button>
+      </div>
     </div>
   </div>
 </ion-content>
