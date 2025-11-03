@@ -45,10 +45,23 @@ export class VehiculoFormPage implements OnInit {
   ngOnInit() {
     this.cargarDatos();
 
-    // Verificar si estamos editando
+    // Verificar si estamos editando desde state o parámetros de ruta
     const vehiculoId = this.route.snapshot.paramMap.get('id');
+
     if (vehiculoId) {
-      this.cargarVehiculo(+vehiculoId);
+      // Edición desde parámetros de ruta (por compatibilidad futura)
+      console.warn('La edición desde parámetros de ruta no está implementada aún');
+    } else {
+      // Verificar si hay datos en el state de navegación (desde lista de vehículos)
+      const navigation = this.router.getCurrentNavigation();
+      if (navigation?.extras?.state) {
+        const vehiculo = navigation.extras.state['vehiculo'] as Vehiculo;
+        if (vehiculo) {
+          this.isEditing.set(true);
+          this.editingId.set(vehiculo.id);
+          this.vehiculoForm.patchValue(vehiculo);
+        }
+      }
     }
   }
 
@@ -63,22 +76,6 @@ export class VehiculoFormPage implements OnInit {
     }
   }
 
-  cargarVehiculo(id: number) {
-    this.isLoading.set(true);
-    // Aquí necesitaríamos un método para obtener un vehículo específico
-    // Por ahora, asumiremos que viene de la navegación con state
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state) {
-      const vehiculo = navigation.extras.state['vehiculo'] as Vehiculo;
-      if (vehiculo) {
-        this.isEditing.set(true);
-        this.editingId.set(vehiculo.id);
-        this.vehiculoForm.patchValue(vehiculo);
-      }
-    }
-    this.isLoading.set(false);
-  }
-
   guardarVehiculo() {
     if (this.vehiculoForm.valid) {
       this.isSaving.set(true);
@@ -86,8 +83,16 @@ export class VehiculoFormPage implements OnInit {
 
       console.log('📤 Enviando datos al servidor:', data);
       console.log('📤 Formulario completo:', this.vehiculoForm.value);
+      console.log('📤 Modo edición:', this.isEditing());
+      console.log('📤 ID del vehículo:', this.editingId());
 
-      this.vehiculoService.crearVehiculo(data).subscribe({
+      const request = this.isEditing()
+        ? this.vehiculoService.actualizarVehiculo(this.editingId()!, data)
+        : this.vehiculoService.crearVehiculo(data);
+
+      console.log('📤 URL de la petición:', this.isEditing() ? `/vehiculos/${this.editingId()}` : '/vehiculos');
+
+      request.subscribe({
         next: (response) => {
           console.log('✅ Vehículo guardado exitosamente:', response);
           this.isSaving.set(false);

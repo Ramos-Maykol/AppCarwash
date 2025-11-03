@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel } from '@ionic/angular/standalone';
@@ -11,9 +11,11 @@ import { MenuController } from '@ionic/angular';
   standalone: true,
   imports: [CommonModule, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel]
 })
-export class NavigationMenuComponent {
+export class NavigationMenuComponent implements AfterViewInit {
   private router = inject(Router);
   private menuController = inject(MenuController);
+
+  @ViewChild('menu') menu!: IonMenu;
 
   menuItems = [
     {
@@ -54,14 +56,60 @@ export class NavigationMenuComponent {
     }
   ];
 
+  ngAfterViewInit() {
+    // El menú está listo para usar
+  }
+
+  onMenuItemClick(event: Event, path: string) {
+    event.preventDefault(); // Prevenir comportamiento por defecto
+    event.stopPropagation(); // Detener propagación
+
+    // Cerrar el menú usando el ViewChild
+    if (this.menu) {
+      this.menu.close().then(() => {
+        // Navegar después de que el menú se haya cerrado completamente
+        setTimeout(() => {
+          this.router.navigate([path]);
+        }, 200); // Mayor delay para animaciones
+      });
+    } else {
+      // Fallback al menuController
+      this.menuController.close('main-menu').then(() => {
+        setTimeout(() => {
+          this.router.navigate([path]);
+        }, 200);
+      });
+    }
+  }
+
+  onLogoutClick(event: Event) {
+    event.preventDefault(); // Prevenir comportamiento por defecto
+    event.stopPropagation(); // Detener propagación
+
+    // Cerrar el menú usando el ViewChild
+    if (this.menu) {
+      this.menu.close().then(() => {
+        // Navegar después de que el menú se haya cerrado completamente
+        setTimeout(() => {
+          this.router.navigate(['/auth/login']);
+        }, 200); // Mayor delay para animaciones
+      });
+    } else {
+      // Fallback al menuController
+      this.menuController.close('main-menu').then(() => {
+        setTimeout(() => {
+          this.router.navigate(['/auth/login']);
+        }, 200);
+      });
+    }
+  }
+
+  // Mantener los métodos anteriores por compatibilidad
   navigateTo(path: string) {
-    this.router.navigate([path]);
-    this.menuController.close('main-menu');
+    this.onMenuItemClick(new Event('click'), path);
   }
 
   logout() {
-    // Aquí iría la lógica de logout
-    this.router.navigate(['/auth/login']);
-    this.menuController.close('main-menu');
+    this.onLogoutClick(new Event('click'));
   }
 }

@@ -78,7 +78,7 @@ class VehiculoController extends Controller
             // La placa debe ser única, ignorando el vehículo actual
             'placa' => ['sometimes', 'required', 'string', 'max:20', Rule::unique('vehiculos', 'placa')->ignore($vehiculo->id)],
             'color' => 'nullable|string|max:50',
-            'tipo_vehiculo_id' => 'sometimes|required|integer|exists:tipos_vehiculo,id',
+            'tipo_vehiculo_id' => 'sometimes|required|integer|exists:tipo_vehiculos,id',
         ]);
 
         $vehiculo->update($datosValidados);

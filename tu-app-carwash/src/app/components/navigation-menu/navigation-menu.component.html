@@ -1,4 +1,4 @@
-<ion-menu contentId="main-content" side="start" menuId="main-menu" class="navigation-menu">
+<ion-menu #menu contentId="main-content" side="start" menuId="main-menu" class="navigation-menu">
   <ion-header class="ion-no-border">
     <ion-toolbar class="menu-header">
       <ion-title class="menu-title">CarWash</ion-title>
@@ -10,7 +10,7 @@
       <ion-item
         *ngFor="let item of menuItems"
         button
-        (click)="navigateTo(item.path)"
+        (click)="onMenuItemClick($event, item.path)"
         class="menu-item"
         lines="none">
         <ion-icon slot="start" [name]="item.icon" class="menu-icon"></ion-icon>
@@ -22,7 +22,7 @@
     </ion-list>
 
     <div class="menu-footer">
-      <ion-item button (click)="logout()" class="logout-item" lines="none">
+      <ion-item button (click)="onLogoutClick($event)" class="logout-item" lines="none">
         <ion-icon slot="start" name="log-out-outline" class="logout-icon"></ion-icon>
         <ion-label class="logout-label">
           <h2>Cerrar Sesión</h2>
