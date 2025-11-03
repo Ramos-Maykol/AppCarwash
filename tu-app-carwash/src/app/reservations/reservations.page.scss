@@ -44,6 +44,54 @@ ion-content {
       --border-radius: var(--border-radius-md);
       font-weight: 500;
       min-height: 44px;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+  }
+
+  // Estilos específicos para filter-segment
+  .filter-segment {
+    display: flex !important;
+    width: 100%;
+
+    ion-segment-button {
+      flex: 1;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+
+      // Corregir el fondo de la parte nativa
+      &::part(native) {
+        opacity: 1 !important;
+        visibility: visible !important;
+        background: transparent !important; // Forzar fondo transparente
+      }
+
+      // Botones NO seleccionados - fondo transparente, texto gris
+      &:not(.segment-button-checked) {
+        --background: transparent;
+        --color: var(--neutral-600);
+        --border-color: var(--border-color);
+
+        &::part(native) {
+          background: transparent !important;
+        }
+      }
+
+      // Botones SELECCIONADOS - fondo azul, texto blanco
+      &.segment-button-checked {
+        --background: var(--primary-color);
+        --color: white;
+        --border-color: var(--primary-color);
+        box-shadow: var(--shadow-light);
+
+        &::part(native) {
+          background: var(--primary-color) !important;
+        }
+      }
     }
   }
 
