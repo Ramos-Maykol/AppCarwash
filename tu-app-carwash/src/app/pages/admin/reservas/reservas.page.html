@@ -1,0 +1,100 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/dashboard" color="dark" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Reservas (API Real)</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargarReservas($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="page-container">
+    
+    <div class="search-section">
+      <ion-searchbar 
+        placeholder="Buscar..." 
+        mode="ios"
+        class="custom-searchbar">
+      </ion-searchbar>
+    </div>
+
+    <div *ngIf="isLoading" style="text-align: center; margin-top: 20px;">
+      <p style="color: var(--neutral-600);">Cargando reservas...</p>
+    </div>
+
+    <div *ngIf="!isLoading && reservas.length === 0" style="text-align: center; margin-top: 20px;">
+      <p style="color: var(--neutral-600);">No hay reservas registradas.</p>
+    </div>
+
+    <div class="bookings-list" *ngIf="!isLoading">
+      
+      @for (reserva of reservas; track reserva.id) {
+        <div class="booking-card animate-slide-up">
+          
+          <div class="card-header">
+            <div class="time-wrapper">
+              <ion-icon name="time"></ion-icon>
+              <span>{{ reserva.cupo_horario?.hora_inicio | date:'shortTime' }}</span>
+              <small style="margin-left:5px; color:#999">
+                 {{ reserva.cupo_horario?.hora_inicio | date:'dd/MM/yyyy' }}
+              </small>
+            </div>
+            <span class="status-badge" [ngClass]="getStatusClass(reserva.estado)">
+              {{ reserva.estado.replace('_', ' ') | titlecase }}
+            </span>
+          </div>
+
+          <div class="card-body">
+            <h3 class="client-name">
+              {{ reserva.cliente?.nombre }} {{ reserva.cliente?.apellido }}
+            </h3>
+            
+            <div class="car-info">
+              <ion-icon name="car"></ion-icon>
+              <span>
+                {{ reserva.vehiculo?.marca }} {{ reserva.vehiculo?.modelo }} • 
+                <strong>{{ reserva.vehiculo?.placa }}</strong>
+              </span>
+            </div>
+            
+            <div class="service-info">
+               {{ reserva.precio_servicio?.servicio?.nombre }}
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <span class="price">${{ reserva.precio_servicio?.precio }}</span>
+            
+            <div class="actions">
+              @if(reserva.estado === 'confirmada') {
+                <button class="action-btn cancel" (click)="cambiarEstado(reserva, 'cancelada')">
+                  <ion-icon name="close-circle"></ion-icon>
+                </button>
+                <button class="action-btn approve" (click)="cambiarEstado(reserva, 'en_proceso')">
+                  <ion-icon name="checkmark-circle"></ion-icon>
+                </button>
+              }
+
+              @if(reserva.estado === 'en_proceso') {
+                <button class="btn-finish" (click)="cambiarEstado(reserva, 'completada')">
+                  Finalizar Lavado
+                </button>
+              }
+
+              @if(reserva.estado === 'completada') {
+                <span style="color: var(--success-color); font-size: 0.9rem;">
+                  <ion-icon name="checkmark-circle" style="vertical-align: middle;"></ion-icon> Listo
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+</ion-content>

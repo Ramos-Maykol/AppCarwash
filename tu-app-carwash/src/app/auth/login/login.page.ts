@@ -33,11 +33,19 @@ export class LoginPage {
       this.authService.login(this.loginForm.value).subscribe({
         next: () => {
           this.isLoading = false;
-          this.router.navigate(['/home']);
+          
+          // REDIRECCIÓN BASADA EN ROL
+          if (this.authService.isAdmin()) {
+              console.log('Usuario es Admin -> Dashboard');
+              this.router.navigate(['/admin/dashboard']); 
+          } else {
+              console.log('Usuario es Cliente -> Home');
+              this.router.navigate(['/home']);
+          }
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.message;
+          this.errorMessage = error.message; // Ahora mostramos el mensaje procesado
         }
       });
     }

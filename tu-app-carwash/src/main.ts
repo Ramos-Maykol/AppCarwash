@@ -1,46 +1,33 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { RouteReuseStrategy, provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { APP_INITIALIZER } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { addIcons } from 'ionicons';
+
+// 1. AGREGAMOS LOS ÍCONOS FALTANTES AQUI (statsChart, calendarNumber, people)
 import {
-  carSportOutline,
-  waterOutline,
-  calendarOutline,
-  timeOutline,
-  personOutline,
-  carOutline,
-  car,  // Agregado para el menú
-  addOutline,
-  createOutline,
-  trashOutline,
-  closeOutline,
-  checkmarkCircleOutline,
-  locationOutline,
-  cashOutline,
-  arrowForwardOutline,
-  arrowBackOutline,
-  logOutOutline,
-  settingsOutline,
-  chevronForwardOutline,
-  closeCircleOutline,
-  // Agregando iconos faltantes
-  person,
-  water,
-  calendar,
-  addCircle,
-  addCircleOutline,
-  home,
-  homeOutline,
-  bicycleOutline
+  carSportOutline, waterOutline, calendarOutline, timeOutline, personOutline,
+  carOutline, car, addOutline, createOutline, trashOutline, closeOutline,
+  checkmarkCircleOutline, locationOutline, cashOutline, arrowForwardOutline,
+  arrowBackOutline, logOutOutline, settingsOutline, chevronForwardOutline,
+  closeCircleOutline, person, water, calendar, addCircle, addCircleOutline,
+  home, homeOutline, bicycleOutline,
+  // --- NUEVOS ---
+  statsChart,
+  calendarNumber,
+  people,
+  peopleOutline, // Agrego este por si acaso usas la versión outline
+  statsChartOutline, // Agrego este por si acaso
+  calendarNumberOutline // Agrego este por si acaso
+  // --------------
 } from 'ionicons/icons';
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+import { authInterceptor } from './app/interceptors/auth.interceptor';
 
-// ⚡ FUNCIÓN DE INICIALIZACIÓN PARA REGISTRAR ICONOS
 export function initializeIcons() {
   return () => {
     addIcons({
@@ -50,7 +37,7 @@ export function initializeIcons() {
       'time-outline': timeOutline,
       'person-outline': personOutline,
       'car-outline': carOutline,
-      'car': car,  // Agregado para el menú
+      'car': car,
       'add-outline': addOutline,
       'create-outline': createOutline,
       'trash-outline': trashOutline,
@@ -64,7 +51,6 @@ export function initializeIcons() {
       'settings-outline': settingsOutline,
       'chevron-forward-outline': chevronForwardOutline,
       'close-circle-outline': closeCircleOutline,
-      // Agregando iconos faltantes
       'person': person,
       'water': water,
       'calendar': calendar,
@@ -72,7 +58,15 @@ export function initializeIcons() {
       'add-circle-outline': addCircleOutline,
       'home': home,
       'home-outline': homeOutline,
-      'bicycle-outline': bicycleOutline
+      'bicycle-outline': bicycleOutline,
+
+      // 2. REGISTRAMOS LOS NUEVOS AQUÍ
+      'stats-chart': statsChart,
+      'stats-chart-outline': statsChartOutline,
+      'calendar-number': calendarNumber,
+      'calendar-number-outline': calendarNumberOutline,
+      'people': people,
+      'people-outline': peopleOutline
     });
     return Promise.resolve();
   };
@@ -87,7 +81,9 @@ bootstrapApplication(AppComponent, {
       withEnabledBlockingInitialNavigation(),
       withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })
     ),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([authInterceptor])
+    ),
     provideNoopAnimations(),
     {
       provide: APP_INITIALIZER,

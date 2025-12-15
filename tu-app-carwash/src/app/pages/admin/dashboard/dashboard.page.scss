@@ -1,0 +1,191 @@
+// --- HEADER ---
+ion-header {
+  ion-toolbar {
+    --background: var(--surface-primary, #ffffff); // Fondo blanco limpio
+    --border-width: 0;
+    --color: var(--neutral-900, #1e293b);
+    padding: 0 8px;
+
+    ion-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--neutral-900, #1e293b);
+      letter-spacing: -0.025em;
+    }
+
+    ion-menu-button {
+      color: var(--neutral-900, #1e293b);
+    }
+  }
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--border-color, #e2e8f0);
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// --- CONTENIDO PRINCIPAL ---
+ion-content {
+  --background: var(--background-secondary, #f8fafc); // Fondo gris claro
+}
+
+.dashboard-container {
+  padding: var(--spacing-xl, 24px) var(--spacing-lg, 16px);
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// --- BIENVENIDA ---
+.welcome-section {
+  margin-bottom: var(--spacing-2xl, 32px);
+  
+  .welcome-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--neutral-900, #1e293b);
+    margin: 0 0 8px 0;
+    letter-spacing: -0.025em;
+  }
+
+  .welcome-subtitle {
+    font-size: 1rem;
+    color: var(--neutral-600, #64748b);
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+// --- GRID DE ESTADÍSTICAS (Nuevo estilo limpio) ---
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); // 2 columnas
+  gap: var(--spacing-lg, 16px);
+  margin-bottom: var(--spacing-3xl, 40px);
+
+  .stat-card {
+    background: var(--surface-primary, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--border-radius-xl, 16px);
+    padding: var(--spacing-xl, 20px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; // Alineado a la izquierda para diferenciar de los botones
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+
+    .stat-icon-wrapper {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #eff6ff; // Azul muy suave
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      
+      ion-icon {
+        font-size: 1.25rem;
+        color: var(--primary-color, #3b82f6);
+      }
+
+      &.success {
+        background: #f0fdf4; // Verde muy suave
+        ion-icon { color: #22c55e; }
+      }
+    }
+
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--neutral-900, #1e293b);
+      margin: 0 0 4px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--neutral-600, #64748b);
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+}
+
+// --- TÍTULOS ---
+.section-header {
+  margin-bottom: var(--spacing-lg, 16px);
+  h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--neutral-900, #1e293b);
+    margin: 0;
+  }
+}
+
+// --- GRID DE MENÚ (Estilo Idéntico al Cliente) ---
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); // Adaptable
+  gap: var(--spacing-lg, 16px);
+}
+
+.service-card {
+  background: var(--surface-primary, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: var(--border-radius-xl, 16px);
+  padding: var(--spacing-xl, 24px) var(--spacing-lg, 16px);
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  // Interacción
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+    border-color: var(--primary-color, #3b82f6);
+  }
+
+  // Iconos
+  ion-icon {
+    font-size: 2.5rem; // Grandes y claros
+    color: var(--primary-color, #3b82f6);
+    margin-bottom: var(--spacing-md, 12px);
+    transition: transform 0.2s ease;
+  }
+
+  &:hover ion-icon {
+    transform: scale(1.1);
+  }
+
+  // Textos
+  .service-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--neutral-900, #1e293b);
+    margin: 0 0 4px 0;
+  }
+
+  .service-description {
+    font-size: 0.75rem;
+    color: var(--neutral-600, #64748b);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  // Variaciones sutiles de color para diferenciar acciones
+  &:nth-child(2) ion-icon { color: #6366f1; } // Indigo para Personal
+  &:nth-child(3) ion-icon { color: #f59e0b; } // Naranja para Servicios
+  &:nth-child(4) ion-icon { color: #8b5cf6; } // Morado para Reportes
+}

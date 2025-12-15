@@ -1,0 +1,173 @@
+// Reutilizamos variables del sistema
+ion-header {
+  ion-toolbar {
+    --background: var(--surface-primary, #ffffff);
+    --border-width: 0;
+    
+    ion-title {
+      font-weight: 700;
+      font-size: 1.125rem;
+      color: var(--neutral-900, #1e293b);
+    }
+  }
+}
+
+ion-content {
+  --background: var(--background-secondary, #f8fafc);
+}
+
+.page-container {
+  padding: var(--spacing-lg, 16px);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+// --- SEARCHBAR CUSTOM ---
+.search-section {
+  margin-bottom: 20px;
+  
+  ion-searchbar.custom-searchbar {
+    --background: var(--surface-primary, #ffffff);
+    --box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); // Sombra muy sutil
+    --border-radius: 12px;
+    --placeholder-color: var(--neutral-600, #64748b);
+    --icon-color: var(--primary-color, #3b82f6);
+    padding: 0;
+  }
+}
+
+// --- BOOKING CARDS ---
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.booking-card {
+  background: var(--surface-primary, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease;
+
+  // Header: Hora y Badge
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--border-color, #e2e8f0);
+
+    .time-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--neutral-600, #64748b);
+      font-size: 0.9rem;
+      font-weight: 600;
+      
+      ion-icon { color: var(--primary-color, #3b82f6); }
+    }
+  }
+
+  // Badges de Estado
+  .status-badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    
+    &.badge-warning { background: #fff7ed; color: #c2410c; } // Pendiente (Naranja)
+    &.badge-process { background: #eff6ff; color: #1d4ed8; } // Proceso (Azul)
+    &.badge-success { background: #f0fdf4; color: #15803d; } // Terminado (Verde)
+    &.badge-error { background: #fef2f2; color: #b91c1c; }   // Cancelado (Rojo)
+  }
+
+  // Cuerpo: Datos del cliente
+  .card-body {
+    margin-bottom: 16px;
+
+    .client-name {
+      margin: 0 0 6px 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--neutral-900, #1e293b);
+    }
+
+    .car-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--neutral-600, #64748b);
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      
+      strong { color: var(--neutral-800, #334155); }
+    }
+
+    .service-info {
+      font-size: 0.9rem;
+      color: var(--primary-color, #3b82f6);
+      font-weight: 500;
+    }
+  }
+
+  // Footer: Precio y Botones
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--neutral-900, #1e293b);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    // Botones de acción circulares pequeños
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &.approve {
+        background: #f0fdf4;
+        color: #16a34a;
+        &:active { background: #dcfce7; }
+      }
+      
+      &.cancel {
+        background: #fef2f2;
+        color: #ef4444;
+        &:active { background: #fee2e2; }
+      }
+    }
+
+    // Botón de texto para finalizar
+    .btn-finish {
+      background: var(--neutral-900, #1e293b);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+  }
+}

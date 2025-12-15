@@ -5,7 +5,7 @@ import {
   IonButton, IonIcon, IonMenuButton, IonButtons
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth.service'; // Asegúrate de que la ruta sea correcta
 
 @Component({
   selector: 'app-profile',
@@ -22,10 +22,11 @@ export class ProfilePage implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
 
+  // Usamos un signal o getter del servicio
   currentUser = this.authService.currentUser;
 
   ngOnInit() {
-    // User data is already loaded from auth service
+    // Los datos ya están cargados en el servicio
   }
 
   goToVehiculos() {
@@ -37,17 +38,13 @@ export class ProfilePage implements OnInit {
   }
 
   logout() {
+    // CORRECCIÓN AQUÍ:
+    // Ya no usamos .subscribe() porque el servicio se encarga de todo.
+    // Simplemente llamamos al método.
+    
+    // Puedes mantener la confirmación si quieres:
     if (confirm('¿Estás seguro de cerrar sesión?')) {
-      this.authService.logout().subscribe({
-        next: () => {
-          this.router.navigate(['/auth/login']);
-        },
-        error: () => {
-          // Even if API fails, clear local data
-          localStorage.removeItem('auth_token');
-          this.router.navigate(['/auth/login']);
-        }
-      });
+      this.authService.logout();
     }
   }
 }

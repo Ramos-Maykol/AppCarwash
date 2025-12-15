@@ -1,0 +1,76 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button color="dark"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Admin Panel</ion-title>
+    <ion-buttons slot="end">
+      <ion-button class="profile-button">
+        <div class="user-avatar">
+           <img src="https://ui-avatars.com/api/?name=Admin&background=eff6ff&color=0f172a" alt="Admin" />
+        </div>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="dashboard-container">
+    
+    <div class="welcome-section">
+      <h1 class="welcome-title">Hola, {{ userName }}</h1>
+      <p class="welcome-subtitle">Resumen de la actividad de hoy</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon-wrapper">
+          <ion-icon name="water"></ion-icon>
+        </div>
+        <h3 class="stat-value">12</h3>
+        <p class="stat-label">Lavados Hoy</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrapper success">
+          <ion-icon name="cash"></ion-icon>
+        </div>
+        <h3 class="stat-value">$450</h3>
+        <p class="stat-label">Ingresos</p>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h2>Gestión Rápida</h2>
+    </div>
+
+    <div class="services-grid">
+      
+      <div class="service-card" routerLink="/admin/reservas">
+        <ion-icon name="calendar-number" class="action-icon"></ion-icon>
+        <h3 class="service-title">Reservas</h3>
+        <p class="service-description">Gestionar agenda</p>
+      </div>
+
+      <div class="service-card" routerLink="/admin/empleados">
+        <ion-icon name="people" class="action-icon"></ion-icon>
+        <h3 class="service-title">Personal</h3>
+        <p class="service-description">Ver equipo</p>
+      </div>
+
+      <div class="service-card" routerLink="/admin/servicios">
+        <ion-icon name="pricetags" class="action-icon"></ion-icon>
+        <h3 class="service-title">Servicios</h3>
+        <p class="service-description">Precios y tipos</p>
+      </div>
+
+      <div class="service-card">
+        <ion-icon name="stats-chart" class="action-icon"></ion-icon>
+        <h3 class="service-title">Reportes</h3>
+        <p class="service-description">Ver métricas</p>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

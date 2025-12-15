@@ -7,18 +7,21 @@
 
   <ion-content class="menu-content">
     <ion-list class="menu-list">
+      
       <ion-item
-        *ngFor="let item of menuItems"
+        *ngFor="let item of displayMenuItems"
         button
         (click)="onMenuItemClick($event, item.path)"
         class="menu-item"
         lines="none">
+        
         <ion-icon slot="start" [name]="item.icon" class="menu-icon"></ion-icon>
         <ion-label class="menu-label">
           <h2>{{ item.title }}</h2>
           <p>{{ item.description }}</p>
         </ion-label>
       </ion-item>
+
     </ion-list>
 
     <div class="menu-footer">

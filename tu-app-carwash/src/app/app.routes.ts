@@ -52,4 +52,19 @@ export const routes: Routes = [
     redirectTo: 'auth/login',
     pathMatch: 'full',
   },
+  
+  // --- CORRECCIÓN AQUÍ ---
+  {
+    // Antes tenías solo 'dashboard', ahora coincide con lo que pide el login
+    path: 'admin/dashboard', 
+    loadComponent: () => import('./pages/admin/dashboard/dashboard.page').then( m => m.DashboardPage),
+    // Recomendación: Agrega el authGuard aquí también para proteger al admin
+    canActivate: [authGuard] 
+  },
+  {
+    path: 'admin/reservas',
+    loadComponent: () => import('./pages/admin/reservas/reservas.page').then( m => m.ReservasPage)
+  },
+
+
 ];
