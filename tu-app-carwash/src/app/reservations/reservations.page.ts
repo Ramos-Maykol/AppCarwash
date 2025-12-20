@@ -88,8 +88,13 @@ export class ReservationsPage implements OnInit {
           this.isLoading.set(false);
           this.filtrarReservas();
         },
-        error: () => {
+        error: (err: any) => {
           this.isLoading.set(false);
+          const backendMessage = err?.error?.message;
+          if (err?.status === 422 && backendMessage) {
+            alert(backendMessage);
+            return;
+          }
           alert('No se pudo cancelar la reserva');
         }
       });
@@ -138,6 +143,10 @@ export class ReservationsPage implements OnInit {
   }
 
   puedeSerCancelada(reserva: Reserva): boolean {
-    return ['pendiente', 'confirmada'].includes(reserva.estado);
+    if (reserva.estado !== 'pendiente') return false;
+    const inicio = reserva.cupo_horario?.hora_inicio;
+    if (!inicio) return false;
+    const inicioDate = new Date(inicio);
+    return inicioDate.getTime() > Date.now();
   }
 }

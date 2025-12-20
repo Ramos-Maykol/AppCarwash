@@ -11,11 +11,9 @@ export class ApiService {
   private apiUrl = environment.apiUrl;
 
   private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('auth_token');
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
     });
   }
 
@@ -34,6 +32,12 @@ export class ApiService {
 
   put<T>(endpoint: string, data: any): Observable<T> {
     return this.http.put<T>(`${this.apiUrl}${endpoint}`, data, {
+      headers: this.getHeaders()
+    });
+  }
+
+  patch<T>(endpoint: string, data: any): Observable<T> {
+    return this.http.patch<T>(`${this.apiUrl}${endpoint}`, data, {
       headers: this.getHeaders()
     });
   }

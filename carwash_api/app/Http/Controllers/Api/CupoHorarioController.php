@@ -29,40 +29,12 @@ class CupoHorarioController extends Controller
 
             $sucursalId = $datosValidados['sucursal_id'];
             
-            // 2. Verificar si la sucursal existe, si no, crearla
+            // 2. Verificar si la sucursal existe (no crear datos por defecto desde un endpoint público)
             $sucursal = Sucursal::find($sucursalId);
             if (!$sucursal) {
-                // Crear sucursal por defecto
-                $sucursal = Sucursal::firstOrCreate(
-                    ['nombre' => 'Carwash Sede Principal'],
-                    [
-                        'direccion' => 'Av. Ejemplo 123, Ciudad',
-                        'telefono' => '987654321',
-                    ]
-                );
-                
-                // Crear horarios de trabajo
-                $diasLaborables = [1, 2, 3, 4, 5]; // Lunes a Viernes
-                foreach ($diasLaborables as $dia) {
-                    $sucursal->horariosTrabajo()->firstOrCreate(
-                        ['dia_semana' => $dia],
-                        [
-                            'hora_inicio' => '09:00:00',
-                            'hora_fin' => '17:00:00',
-                        ]
-                    );
-                }
-                
-                // Sábado
-                $sucursal->horariosTrabajo()->firstOrCreate(
-                    ['dia_semana' => 6],
-                    [
-                        'hora_inicio' => '09:00:00',
-                        'hora_fin' => '13:00:00',
-                    ]
-                );
-                
-                $sucursalId = $sucursal->id;
+                return response()->json([
+                    'message' => 'Sucursal no encontrada.'
+                ], 404);
             }
             
             $fecha = Carbon::parse($datosValidados['fecha'])->startOfDay(); // Asegurarnos que es al inicio del día

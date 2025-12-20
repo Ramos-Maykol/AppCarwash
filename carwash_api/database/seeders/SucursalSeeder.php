@@ -23,7 +23,6 @@ class SucursalSeeder extends Seeder
         );
 
         $this->command->info('Sucursal "Carwash Sede Principal" creada.');
-        //[Image of a weekly work schedule]
         // 2. Crear los Horarios de Trabajo para esta sucursal
         // (1 = Lunes, 5 = Viernes)
         $diasLaborables = [1, 2, 3, 4, 5]; // Lunes a Viernes

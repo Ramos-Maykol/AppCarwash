@@ -29,4 +29,17 @@ export class ServicioService {
 
     return precioServicio ? parseFloat(precioServicio.precio) : null;
   }
+
+  obtenerPrecioServicioId(servicioId: number, tipoVehiculoId: number): number | null {
+    const servicio = this.servicios().find(s => s.id === servicioId);
+    if (!servicio || !servicio.precios_servicio) {
+      return null;
+    }
+
+    const precioServicio = servicio.precios_servicio.find(
+      ps => ps.tipo_vehiculo_id === tipoVehiculoId
+    );
+
+    return precioServicio?.id ?? null;
+  }
 }

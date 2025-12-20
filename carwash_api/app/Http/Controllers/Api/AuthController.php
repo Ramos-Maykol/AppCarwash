@@ -18,26 +18,48 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         // 1. Validar los datos que llegan
+        // Soportamos 2 formatos de payload:
+        // - { nombre, apellido, telefono, ... }
+        // - { name, telefono, ... } donde name se divide en nombre/apellido
         $request->validate([
-            'nombre' => ['required', 'string', 'max:255'],
-            'apellido' => ['required', 'string', 'max:255'],
+            'nombre' => ['nullable', 'string', 'max:255'],
+            'apellido' => ['nullable', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()], // 'confirmed' busca 'password_confirmation'
             'telefono' => ['required', 'string', 'max:20'],
         ]);
 
-        // 2. Crear el Usuario (para el login)
+        $nombre = $request->input('nombre');
+        $apellido = $request->input('apellido');
+        $name = $request->input('name');
+
+        // 2. Normalizar nombre/apellido
+        if ((!$nombre || !$apellido) && $name) {
+            $nameNormalized = trim(preg_replace('/\s+/', ' ', $name));
+            $parts = $nameNormalized !== '' ? explode(' ', $nameNormalized, 2) : [];
+            $nombre = $nombre ?: ($parts[0] ?? null);
+            $apellido = $apellido ?: ($parts[1] ?? null);
+        }
+
+        if (!$nombre || !$apellido) {
+            return response()->json([
+                'message' => 'Nombre y apellido son obligatorios (envía nombre+apellido o name completo).'
+            ], 422);
+        }
+
+        // 3. Crear el Usuario (para el login)
         $user = User::create([
-            'name' => $request->nombre . ' ' . $request->apellido,
+            'name' => trim($nombre . ' ' . $apellido),
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        // 3. Crear el Cliente (para los datos del perfil)
+        // 4. Crear el Cliente (para los datos del perfil)
         $cliente = Cliente::create([
             'usuario_id' => $user->id,
-            'nombre' => $request->nombre,
-            'apellido' => $request->apellido,
+            'nombre' => $nombre,
+            'apellido' => $apellido,
             'telefono' => $request->telefono,
         ]);
         
@@ -47,7 +69,14 @@ class AuthController extends Controller
         // 5. Devolver una respuesta (token de acceso)
         return response()->json([
             'message' => 'Cliente registrado exitosamente',
-            'token' => $user->createToken('auth_token')->plainTextToken
+            'token' => $user->createToken('auth_token')->plainTextToken,
+            'token_type' => 'Bearer',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames(),
+            ],
         ], 201);
     }
 

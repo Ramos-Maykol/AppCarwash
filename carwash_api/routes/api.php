@@ -47,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- Reservas (Cliente) ---
     Route::post('/reservas', [ReservaController::class, 'store']);
+    Route::patch('/reservas/{reserva}/estado', [ReservaController::class, 'updateEstado']);
     Route::get('/mis-reservas', [ReservaController::class, 'index']);
 
     // --- Vehículos (Cliente) ---

@@ -81,7 +81,8 @@ class ReservaController extends Controller
 
         // 4. Doble chequeo de seguridad (opcional pero recomendado)
         // Asegurarse de que el cupo no sea en el pasado
-        if (Carbon::parse($cupo->hora_inicio)->isPast()) {
+        $inicioCupo = Carbon::parse($cupo->hora_inicio);
+        if ($inicioCupo->lessThanOrEqualTo(Carbon::now())) {
             return response()->json(['message' => 'No puedes reservar un cupo que ya ha pasado.'], 422);
         }
 
@@ -131,6 +132,117 @@ class ReservaController extends Controller
                 'error' => $e->getMessage() // Ocultar en producción
             ], 500); // 500 Error de Servidor
         }
+    }
+
+    /**
+     * Cambia el estado de una reserva.
+     * - Cliente: solo puede cancelar su propia reserva y solo si el cupo es futuro.
+     * - Admin/Empleado: puede pasar a 'en_proceso' o 'completada'.
+     */
+    public function updateEstado(Request $request, Reserva $reserva)
+    {
+        $datosValidados = $request->validate([
+            'estado' => ['required', 'string'],
+        ]);
+
+        $estadoSolicitado = strtolower(trim($datosValidados['estado']));
+
+        // Normalizar aliases
+        $estadoMap = [
+            'confirmado' => 'confirmada',
+            'terminado' => 'completada',
+            'cancelado' => 'cancelada',
+        ];
+        $estadoNuevo = $estadoMap[$estadoSolicitado] ?? $estadoSolicitado;
+
+        $estadosPermitidos = ['pendiente', 'confirmada', 'en_proceso', 'completada', 'cancelada'];
+        if (!in_array($estadoNuevo, $estadosPermitidos, true)) {
+            return response()->json([
+                'message' => 'Estado inválido.'
+            ], 422);
+        }
+
+        $user = $request->user();
+        $esAdminOEmpleado = $user && ($user->hasRole('admin') || $user->hasRole('empleado'));
+
+        // Cargar cupo para validaciones de tiempo
+        $reserva->loadMissing('cupoHorario');
+
+        // Cliente
+        if (!$esAdminOEmpleado) {
+            $cliente = $user?->cliente;
+            if (!$cliente || $reserva->cliente_id !== $cliente->id) {
+                return response()->json(['message' => 'No autorizado.'], 403);
+            }
+
+            if ($estadoNuevo !== 'cancelada') {
+                return response()->json([
+                    'message' => 'No autorizado. Un cliente solo puede cancelar su reserva.'
+                ], 403);
+            }
+
+            // Solo permitir cancelación si el cupo es futuro
+            if (!$reserva->cupoHorario) {
+                return response()->json(['message' => 'Cupo horario no encontrado para la reserva.'], 409);
+            }
+
+            $inicioCupo = Carbon::parse($reserva->cupoHorario->hora_inicio);
+            if ($inicioCupo->lessThanOrEqualTo(Carbon::now())) {
+                return response()->json([
+                    'message' => 'No puedes cancelar una reserva con fecha/hora pasada.'
+                ], 422);
+            }
+
+            // Permitir cancelar solo si aún no está finalizada
+            if (in_array($reserva->estado, ['completada', 'cancelada'], true)) {
+                return response()->json([
+                    'message' => 'La reserva ya no puede ser modificada.'
+                ], 409);
+            }
+
+            DB::beginTransaction();
+            try {
+                $reserva->estado = 'cancelada';
+                $reserva->save();
+
+                // Liberar cupo
+                $reserva->cupoHorario->estado = 'disponible';
+                $reserva->cupoHorario->save();
+
+                DB::commit();
+
+                return response()->json([
+                    'message' => 'Reserva cancelada exitosamente.',
+                    'reserva' => $reserva->fresh()->load('cupoHorario', 'vehiculo', 'precioServicio.servicio')
+                ]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'Error al cancelar la reserva.',
+                ], 500);
+            }
+        }
+
+        // Admin/Empleado
+        if (!in_array($estadoNuevo, ['en_proceso', 'completada'], true)) {
+            return response()->json([
+                'message' => 'Transición no permitida para tu rol.'
+            ], 403);
+        }
+
+        if (in_array($reserva->estado, ['cancelada', 'completada'], true)) {
+            return response()->json([
+                'message' => 'La reserva ya no puede ser modificada.'
+            ], 409);
+        }
+
+        $reserva->estado = $estadoNuevo;
+        $reserva->save();
+
+        return response()->json([
+            'message' => 'Estado de la reserva actualizado.',
+            'reserva' => $reserva->fresh()->load('cupoHorario', 'vehiculo', 'precioServicio.servicio')
+        ]);
     }
 }
 

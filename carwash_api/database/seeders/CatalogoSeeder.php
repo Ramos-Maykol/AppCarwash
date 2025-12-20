@@ -23,17 +23,26 @@ class CatalogoSeeder extends Seeder
         // 2. Crear Servicios
         $lavadoBasico = Servicio::firstOrCreate(
             ['nombre' => 'Lavado Básico Exterior'],
-            ['descripcion' => 'Lavado de carrocería, llantas y secado.']
+            [
+                'descripcion' => 'Lavado de carrocería, llantas y secado.',
+                'duracion_estimada_minutos' => 30,
+            ]
         );
         
         $lavadoCompleto = Servicio::firstOrCreate(
             ['nombre' => 'Lavado Completo (Full)'],
-            ['descripcion' => 'Lavado básico + aspirado interior y limpieza de tablero.']
+            [
+                'descripcion' => 'Lavado básico + aspirado interior y limpieza de tablero.',
+                'duracion_estimada_minutos' => 60,
+            ]
         );
 
         $encerado = Servicio::firstOrCreate(
             ['nombre' => 'Encerado'],
-            ['descripcion' => 'Encerado manual para protección y brillo.']
+            [
+                'descripcion' => 'Encerado manual para protección y brillo.',
+                'duracion_estimada_minutos' => 45,
+            ]
         );
 
         // 3. Crear los Precios (la conexión)

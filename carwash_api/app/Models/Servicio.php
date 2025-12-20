@@ -14,7 +14,7 @@ class Servicio extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
-        'duracion_estimada_min',
+        'duracion_estimada_minutos',
     ];
 
     // --- RELACIONES ---

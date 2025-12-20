@@ -36,10 +36,8 @@ export class LoginPage {
           
           // REDIRECCIÓN BASADA EN ROL
           if (this.authService.isAdmin()) {
-              console.log('Usuario es Admin -> Dashboard');
               this.router.navigate(['/admin/dashboard']); 
           } else {
-              console.log('Usuario es Cliente -> Home');
               this.router.navigate(['/home']);
           }
         },

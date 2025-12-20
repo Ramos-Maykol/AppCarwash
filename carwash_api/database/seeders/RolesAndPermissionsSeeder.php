@@ -20,27 +20,27 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // --- Crear Permisos Básicos ---
         // (En un proyecto real, serías más específico)
-        Permission::create(['name' => 'ver_dashboard_admin']);
-        Permission::create(['name' => 'gestionar_sucursales']);
-        Permission::create(['name' => 'gestionar_servicios']);
-        Permission::create(['name' => 'gestionar_reservas']);
-        Permission::create(['name' => 'gestionar_clientes']);
-        Permission::create(['name' => 'ver_reservas_propias']);
-        Permission::create(['name' => 'crear_reservas_propias']);
+        Permission::firstOrCreate(['name' => 'ver_dashboard_admin']);
+        Permission::firstOrCreate(['name' => 'gestionar_sucursales']);
+        Permission::firstOrCreate(['name' => 'gestionar_servicios']);
+        Permission::firstOrCreate(['name' => 'gestionar_reservas']);
+        Permission::firstOrCreate(['name' => 'gestionar_clientes']);
+        Permission::firstOrCreate(['name' => 'ver_reservas_propias']);
+        Permission::firstOrCreate(['name' => 'crear_reservas_propias']);
 
         // --- Crear Roles ---
-        $roleAdmin = Role::create(['name' => 'admin']);
+        $roleAdmin = Role::firstOrCreate(['name' => 'admin']);
         // El rol 'admin' obtiene todos los permisos
         // (En lugar de dárselos uno por uno, le damos un "super-permiso")
         $roleAdmin->givePermissionTo(Permission::all());
 
-        $roleEmpleado = Role::create(['name' => 'empleado']);
+        $roleEmpleado = Role::firstOrCreate(['name' => 'empleado']);
         $roleEmpleado->givePermissionTo([
             'ver_dashboard_admin',
             'gestionar_reservas',
         ]);
 
-        $roleCliente = Role::create(['name' => 'cliente']);
+        $roleCliente = Role::firstOrCreate(['name' => 'cliente']);
         $roleCliente->givePermissionTo([
             'ver_reservas_propias',
             'crear_reservas_propias',

@@ -23,7 +23,7 @@ class AdminUserSeeder extends Seeder
         );
 
         // 2. Crear el Usuario (para login)
-        $adminEmail = 'admin@carwash.com';
+        $adminEmail = 'admin@test.com';
         $adminPass = 'password'; // Puedes cambiar esto
 
         $usuario = User::firstOrCreate(

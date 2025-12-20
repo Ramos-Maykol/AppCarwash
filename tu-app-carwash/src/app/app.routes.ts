@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { adminGuard } from './guards/admin.guard';
 import { LoginPage } from './auth/login/login.page';
 import { RegisterPage } from './auth/register/register.page';
 
@@ -59,11 +60,12 @@ export const routes: Routes = [
     path: 'admin/dashboard', 
     loadComponent: () => import('./pages/admin/dashboard/dashboard.page').then( m => m.DashboardPage),
     // Recomendación: Agrega el authGuard aquí también para proteger al admin
-    canActivate: [authGuard] 
+    canActivate: [authGuard, adminGuard]
   },
   {
     path: 'admin/reservas',
-    loadComponent: () => import('./pages/admin/reservas/reservas.page').then( m => m.ReservasPage)
+    loadComponent: () => import('./pages/admin/reservas/reservas.page').then( m => m.ReservasPage),
+    canActivate: [authGuard, adminGuard]
   },
 
 

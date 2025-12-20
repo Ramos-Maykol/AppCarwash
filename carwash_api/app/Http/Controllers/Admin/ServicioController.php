@@ -29,13 +29,24 @@ class ServicioController extends Controller
         $datosValidados = $request->validate([
             'nombre' => 'required|string|max:255|unique:servicios,nombre',
             'descripcion' => 'nullable|string',
-            'duracion_estimada_min' => 'required|integer|min:5',
+            'duracion_estimada_minutos' => 'nullable|integer|min:5',
+            'duracion_estimada_min' => 'nullable|integer|min:5',
             // Validar que 'precios' sea un array y que al menos tenga un elemento
             'precios' => 'required|array|min:1',
             // Validar cada elemento dentro del array 'precios'
             'precios.*.tipo_vehiculo_id' => 'required|integer|exists:tipos_vehiculo,id',
             'precios.*.precio' => 'required|numeric|min:0',
         ]);
+
+        $duracion = $datosValidados['duracion_estimada_minutos']
+            ?? $datosValidados['duracion_estimada_min']
+            ?? null;
+
+        if ($duracion === null) {
+            return response()->json([
+                'message' => 'El campo duracion_estimada_minutos es obligatorio.'
+            ], 422);
+        }
 
         try {
             DB::beginTransaction();
@@ -44,7 +55,7 @@ class ServicioController extends Controller
             $servicio = Servicio::create([
                 'nombre' => $datosValidados['nombre'],
                 'descripcion' => $datosValidados['descripcion'],
-                'duracion_estimada_min' => $datosValidados['duracion_estimada_min'],
+                'duracion_estimada_minutos' => $duracion,
             ]);
 
             // 2. Crear los Precios asociados
@@ -84,11 +95,22 @@ class ServicioController extends Controller
         $datosValidados = $request->validate([
             'nombre' => ['required', 'string', 'max:255', Rule::unique('servicios', 'nombre')->ignore($servicio->id)],
             'descripcion' => 'nullable|string',
-            'duracion_estimada_min' => 'required|integer|min:5',
+            'duracion_estimada_minutos' => 'nullable|integer|min:5',
+            'duracion_estimada_min' => 'nullable|integer|min:5',
             'precios' => 'required|array|min:1',
             'precios.*.tipo_vehiculo_id' => 'required|integer|exists:tipos_vehiculo,id',
             'precios.*.precio' => 'required|numeric|min:0',
         ]);
+
+        $duracion = $datosValidados['duracion_estimada_minutos']
+            ?? $datosValidados['duracion_estimada_min']
+            ?? null;
+
+        if ($duracion === null) {
+            return response()->json([
+                'message' => 'El campo duracion_estimada_minutos es obligatorio.'
+            ], 422);
+        }
 
         try {
             DB::beginTransaction();
@@ -97,7 +119,7 @@ class ServicioController extends Controller
             $servicio->update([
                 'nombre' => $datosValidados['nombre'],
                 'descripcion' => $datosValidados['descripcion'],
-                'duracion_estimada_min' => $datosValidados['duracion_estimada_min'],
+                'duracion_estimada_minutos' => $duracion,
             ]);
 
             // 2. Sincronizar los Precios (Forma simple: borrar y volver a crear)

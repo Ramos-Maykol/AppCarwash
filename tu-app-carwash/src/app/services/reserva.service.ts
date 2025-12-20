@@ -43,16 +43,20 @@ export class ReservaService {
     );
   }
 
-  cancelarReserva(id: number): Observable<ApiResponse<Reserva>> {
-    return this.apiService.put<ApiResponse<Reserva>>(`/reservas/${id}/cancelar`, {}).pipe(
-      tap(response => {
+  actualizarEstado(id: number, estado: string): Observable<{ message: string; reserva: Reserva }> {
+    return this.apiService.patch<{ message: string; reserva: Reserva }>(`/reservas/${id}/estado`, { estado }).pipe(
+      tap((response) => {
         const current = this.reservas();
         const index = current.findIndex(r => r.id === id);
         if (index !== -1) {
-          current[index] = response.data;
+          current[index] = response.reserva;
           this.reservas.set([...current]);
         }
       })
     );
+  }
+
+  cancelarReserva(id: number): Observable<{ message: string; reserva: Reserva }> {
+    return this.actualizarEstado(id, 'cancelada');
   }
 }

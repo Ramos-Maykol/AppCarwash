@@ -181,10 +181,30 @@ export class BookingPage implements OnInit {
     if (!this.canContinue()) return;
 
     this.isLoading.set(true);
+
+    const servicioId = this.selectedServicioId();
+    const vehiculo = this.selectedVehiculo();
+
+    if (!servicioId || !vehiculo) {
+      this.isLoading.set(false);
+      alert('Debes seleccionar un servicio y un vehículo.');
+      return;
+    }
+
+    const precioServicioId = this.servicioService.obtenerPrecioServicioId(
+      servicioId,
+      vehiculo.tipo_vehiculo_id
+    );
+
+    if (!precioServicioId) {
+      this.isLoading.set(false);
+      alert('No se encontró un precio válido para este servicio y tipo de vehículo.');
+      return;
+    }
     
     const reservaData = {
       vehiculo_id: this.selectedVehiculoId()!,
-      precio_servicio_id: this.selectedServicioId()!,
+      precio_servicio_id: precioServicioId,
       cupo_horario_id: this.selectedCupoId()!,
     };
 
@@ -193,8 +213,13 @@ export class BookingPage implements OnInit {
         this.isLoading.set(false);
         this.router.navigate(['/reservations']); // ✅ Ahora la ruta existe
       },
-      error: () => {
+      error: (err: any) => {
         this.isLoading.set(false);
+        const backendMessage = err?.error?.message;
+        if (err?.status === 422 && backendMessage) {
+          alert(backendMessage);
+          return;
+        }
         alert('Error al crear la reserva. Por favor intenta nuevamente.');
       }
     });
