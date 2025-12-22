@@ -65,6 +65,7 @@ class SucursalController extends Controller
             'nombre' => 'required|string|max:255|unique:sucursals,nombre',
             'direccion' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
+            'esta_activa' => 'sometimes|boolean',
         ]);
 
         $sucursal = Sucursal::create($datosValidados);
@@ -75,11 +76,20 @@ class SucursalController extends Controller
     /**
      * Muestra una sucursal específica.
      */
-    public function show(Sucursal $sucursal)
+    public function show($id)
     {
-        // Cargar los horarios de trabajo asociados a esta sucursal
-        $sucursal->load('horariosTrabajo');
-        return response()->json($sucursal);
+        $sucursal = Sucursal::with('horariosTrabajo')->findOrFail($id);
+
+        return response()->json([
+            'data' => [
+                'id' => $sucursal->id,
+                'nombre' => $sucursal->nombre,
+                'direccion' => $sucursal->direccion,
+                'telefono' => $sucursal->telefono,
+                'esta_activa' => (bool) $sucursal->esta_activa,
+                'horarios_trabajo' => $sucursal->horariosTrabajo,
+            ]
+        ]);
     }
 
     /**
@@ -91,6 +101,7 @@ class SucursalController extends Controller
             'nombre' => ['required', 'string', 'max:255', Rule::unique('sucursals', 'nombre')->ignore($sucursal->id)],
             'direccion' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
+            'esta_activa' => 'sometimes|boolean',
         ]);
 
         $sucursal->update($datosValidados);

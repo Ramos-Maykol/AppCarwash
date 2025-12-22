@@ -67,6 +67,51 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/reservas/reservas.page').then( m => m.ReservasPage),
     canActivate: [authGuard, adminGuard]
   },
+  {
+    path: 'admin/empleados',
+    loadComponent: () => import('./pages/admin/empleados-list/empleados-list.page').then(m => m.EmpleadosListPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/empleados/crear',
+    loadComponent: () => import('./pages/admin/empleado-form/empleado-form.page').then(m => m.EmpleadoFormPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/empleados/editar/:id',
+    loadComponent: () => import('./pages/admin/empleado-form/empleado-form.page').then(m => m.EmpleadoFormPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/horarios',
+    loadComponent: () => import('./pages/admin/horarios/horarios.page').then(m => m.HorariosPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/sucursales',
+    loadComponent: () => import('./pages/admin/sucursales-list/sucursales-list.page').then(m => m.SucursalesListPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/sucursales/crear',
+    loadComponent: () => import('./pages/admin/sucursal-form/sucursal-form.page').then(m => m.SucursalFormPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/sucursales/editar/:id',
+    loadComponent: () => import('./pages/admin/sucursal-form/sucursal-form.page').then(m => m.SucursalFormPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/servicios',
+    loadComponent: () => import('./pages/admin/servicios/servicios.page').then(m => m.ServiciosPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/reportes',
+    loadComponent: () => import('./pages/admin/reportes/reportes.page').then(m => m.ReportesPage),
+    canActivate: [authGuard, adminGuard]
+  },
 
 
 ];

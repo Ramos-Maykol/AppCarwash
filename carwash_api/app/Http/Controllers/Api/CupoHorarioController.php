@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\CupoHorario;
+use App\Models\Empleado;
 use App\Models\Sucursal;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -92,6 +93,14 @@ class CupoHorarioController extends Controller
             return;
         }
 
+        $empleadosActivos = Empleado::query()
+            ->where('sucursal_id', $sucursal->id)
+            ->where('activo', true)
+            ->whereHas('cargo', function ($query) {
+                $query->where('nombre_cargo', 'LIKE', '%Lavador%');
+            })
+            ->pluck('id');
+
         $diaSemana = $fecha->dayOfWeekIso; // 1 (Lunes) a 7 (Domingo)
         $duracionCupo = 30; // minutos
 
@@ -117,16 +126,23 @@ class CupoHorarioController extends Controller
 
             // Solo crear si el cupo está en el futuro
             if ($inicioCupo->isFuture() || $inicioCupo->isCurrentMinute()) {
-                CupoHorario::firstOrCreate(
-                    [
-                        'sucursal_id' => $sucursal->id,
-                        'hora_inicio' => $inicioCupo,
-                    ],
-                    [
-                        'hora_fin' => $finCupo,
-                        'estado' => 'disponible',
-                    ]
-                );
+                // Regla de negocio: cantidad de cupos = cantidad de empleados activos en la sucursal.
+                // Si no hay empleados asignados, se crea 1 cupo (fallback) para no romper el flujo.
+                $empleadoIdsParaSlot = $empleadosActivos->isNotEmpty() ? $empleadosActivos : collect([null]);
+
+                foreach ($empleadoIdsParaSlot as $empleadoId) {
+                    CupoHorario::firstOrCreate(
+                        [
+                            'sucursal_id' => $sucursal->id,
+                            'hora_inicio' => $inicioCupo,
+                            'empleado_id' => $empleadoId,
+                        ],
+                        [
+                            'hora_fin' => $finCupo,
+                            'estado' => 'disponible',
+                        ]
+                    );
+                }
             }
 
             // Movernos al siguiente cupo

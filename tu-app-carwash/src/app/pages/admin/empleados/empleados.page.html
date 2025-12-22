@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Empleados</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cargarDatos()">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item lines="full">
+    <ion-label>
+      <h2>Crear empleado</h2>
+      <p>Asignación a sucursal y estado activo</p>
+    </ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Nombre *</ion-label>
+    <ion-input [(ngModel)]="form.nombre" placeholder="Nombre"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Apellido *</ion-label>
+    <ion-input [(ngModel)]="form.apellido" placeholder="Apellido"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Email *</ion-label>
+    <ion-input [(ngModel)]="form.email" type="email" placeholder="correo@dominio.com"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Password *</ion-label>
+    <ion-input [(ngModel)]="form.password" type="password"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Confirmación *</ion-label>
+    <ion-input [(ngModel)]="form.password_confirmation" type="password"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Cargo *</ion-label>
+    <ion-select [(ngModel)]="form.cargo_id" interface="popover" placeholder="Selecciona un cargo">
+      <ion-select-option *ngFor="let c of cargos" [value]="c.id">{{ c.nombre_cargo }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Sucursal</ion-label>
+    <ion-select [(ngModel)]="form.sucursal_id" interface="popover" placeholder="(Opcional)">
+      <ion-select-option [value]="null">Sin asignar</ion-select-option>
+      <ion-select-option *ngFor="let s of sucursales" [value]="s.id">{{ s.nombre }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Código empleado</ion-label>
+    <ion-input [(ngModel)]="form.codigo_empleado" placeholder="(Opcional)"></ion-input>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-label>Activo</ion-label>
+    <ion-toggle [(ngModel)]="form.activo"></ion-toggle>
+  </ion-item>
+
+  <div class="actions">
+    <ion-button expand="block" (click)="crearEmpleado()">
+      <ion-icon slot="start" name="add-circle"></ion-icon>
+      Crear
+    </ion-button>
+  </div>
+
+  <ion-item lines="full">
+    <ion-label>
+      <h2>Listado</h2>
+      <p>{{ empleados.length }} empleados</p>
+    </ion-label>
+  </ion-item>
+
+  <ion-list>
+    <ion-item *ngFor="let e of empleados">
+      <ion-label>
+        <h2>{{ e.nombre }} {{ e.apellido }}</h2>
+        <p>Email: {{ e.usuario?.email || e.usuario?.name || e.id }}</p>
+        <p>Cargo: {{ e.cargo?.nombre_cargo || e.cargo_id }}</p>
+        <p>Sucursal: {{ e.sucursal?.nombre || (e.sucursal_id ? e.sucursal_id : 'Sin asignar') }}</p>
+        <p>Activo: {{ e.activo === false ? 'No' : 'Sí' }}</p>
+      </ion-label>
+      <ion-button color="danger" fill="clear" (click)="eliminarEmpleado(e)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

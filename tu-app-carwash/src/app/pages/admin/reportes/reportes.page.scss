@@ -1,0 +1,51 @@
+
+.kpi {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.chart {
+  height: 280px;
+}
+
+.export-actions {
+  padding: 0;
+}
+
+.export-btn {
+  height: 44px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  --border-radius: 10px;
+  --padding-start: 14px;
+  --padding-end: 14px;
+}
+
+.export-btn ion-icon {
+  font-size: 18px;
+}
+
+.export-btn--pdf {
+  --background: #7a1f1f;
+  --color: #fff;
+}
+
+.export-btn--excel {
+  --background: #1f7a3a;
+  --color: #fff;
+}
+
+.export-btn--word {
+  --background: #2b579a;
+  --color: #fff;
+}
+
+@media (max-width: 480px) {
+  .chart {
+    height: 240px;
+  }
+
+  .export-btn {
+    height: 46px;
+  }
+}

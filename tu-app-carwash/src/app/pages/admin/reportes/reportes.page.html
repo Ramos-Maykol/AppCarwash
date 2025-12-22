@@ -1,0 +1,113 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Reportes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cargar()">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="4">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Total Ingresos</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="kpi">{{ kpiTotalIngresos() | number:'1.2-2' }}</div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="4">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Total Lavados</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="kpi">{{ kpiTotalLavados() }}</div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="4">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Pendientes</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="kpi">{{ kpiPendientes() }}</div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Tendencia de Ingresos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="chart">
+        <canvas baseChart
+          [type]="'bar'"
+          [data]="ingresosBarData()"
+          [options]="ingresosBarOptions">
+        </canvas>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Distribución por Estado</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="chart">
+        <canvas baseChart
+          [type]="'pie'"
+          [data]="estadosPieData()"
+          [options]="estadosPieOptions">
+        </canvas>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Exportar Datos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid class="export-actions">
+        <ion-row>
+          <ion-col size="12" size-md="4">
+            <ion-button class="export-btn export-btn--pdf" expand="block" (click)="descargar('pdf')">
+              <ion-icon slot="start" name="download"></ion-icon>
+              PDF
+            </ion-button>
+          </ion-col>
+          <ion-col size="12" size-md="4">
+            <ion-button class="export-btn export-btn--excel" expand="block" (click)="descargar('excel')">
+              <ion-icon slot="start" name="download"></ion-icon>
+              Excel
+            </ion-button>
+          </ion-col>
+          <ion-col size="12" size-md="4">
+            <ion-button class="export-btn export-btn--word" expand="block" (click)="descargar('word')">
+              <ion-icon slot="start" name="download"></ion-icon>
+              Word
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

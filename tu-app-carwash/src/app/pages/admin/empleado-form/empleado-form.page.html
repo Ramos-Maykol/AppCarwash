@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button defaultHref="/admin/empleados"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ modo === 'crear' ? 'Nuevo Empleado' : 'Editar Empleado' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Información</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="inset">
+        <ion-item>
+          <ion-label position="stacked">Nombre *</ion-label>
+          <ion-input [(ngModel)]="formData.nombre" placeholder="Nombre"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Apellido *</ion-label>
+          <ion-input [(ngModel)]="formData.apellido" placeholder="Apellido"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Email *</ion-label>
+          <ion-input [(ngModel)]="formData.email" type="email" placeholder="correo@dominio.com"></ion-input>
+        </ion-item>
+
+        <ion-item *ngIf="modo === 'crear'">
+          <ion-label position="stacked">Password *</ion-label>
+          <ion-input [(ngModel)]="formData.password" type="password"></ion-input>
+        </ion-item>
+
+        <ion-item *ngIf="modo === 'crear'">
+          <ion-label position="stacked">Confirmación *</ion-label>
+          <ion-input [(ngModel)]="formData.password_confirmation" type="password"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Cargo *</ion-label>
+          <ion-select [(ngModel)]="formData.cargo_id" interface="popover" placeholder="Selecciona un cargo">
+            <ion-select-option *ngFor="let c of cargos" [value]="c.id">{{ c.nombre_cargo }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Sucursal</ion-label>
+          <ion-select [(ngModel)]="formData.sucursal_id" interface="popover" placeholder="(Opcional)">
+            <ion-select-option [value]="null">Sin asignar</ion-select-option>
+            <ion-select-option *ngFor="let s of sucursales" [value]="s.id">{{ s.nombre }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Código empleado</ion-label>
+          <ion-input [(ngModel)]="formData.codigo_empleado" placeholder="(Opcional)"></ion-input>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-label>Activo</ion-label>
+          <ion-toggle [(ngModel)]="formData.activo"></ion-toggle>
+        </ion-item>
+      </ion-list>
+
+      <div class="actions">
+        <ion-button expand="block" (click)="guardar()">
+          <ion-icon slot="start" name="save"></ion-icon>
+          Guardar
+        </ion-button>
+
+        <ion-button *ngIf="modo === 'editar'" expand="block" color="danger" fill="outline" (click)="eliminar()">
+          <ion-icon slot="start" name="trash"></ion-icon>
+          Eliminar
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -22,6 +22,16 @@ class AdminUserSeeder extends Seeder
             ['descripcion' => 'Administrador principal del sistema']
         );
 
+        // Cargos operativos / de prueba (capacity planning)
+        Cargo::firstOrCreate(
+            ['nombre_cargo' => 'Lavador'],
+            ['descripcion' => 'Personal operativo de lavado']
+        );
+        Cargo::firstOrCreate(
+            ['nombre_cargo' => 'Recepcionista'],
+            ['descripcion' => 'Atención al cliente y recepción']
+        );
+
         // 2. Crear el Usuario (para login)
         $adminEmail = 'admin@test.com';
         $adminPass = 'password'; // Puedes cambiar esto

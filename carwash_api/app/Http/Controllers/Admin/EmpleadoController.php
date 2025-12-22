@@ -19,7 +19,7 @@ class EmpleadoController extends Controller
     public function index()
     {
         // Cargar empleados con sus relaciones de 'usuario' (para email) y 'cargo' (para nombre de cargo)
-        $empleados = Empleado::with('usuario', 'cargo')->get();
+        $empleados = Empleado::with('usuario', 'cargo', 'sucursal')->get();
         return response()->json($empleados);
     }
 
@@ -34,6 +34,8 @@ class EmpleadoController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => ['required', 'confirmed', Password::defaults()],
             'cargo_id' => 'required|integer|exists:cargos,id',
+            'sucursal_id' => 'nullable|integer|exists:sucursals,id',
+            'activo' => 'sometimes|boolean',
             'codigo_empleado' => 'nullable|string|max:50|unique:empleados,codigo_empleado',
         ]);
 
@@ -56,14 +58,16 @@ class EmpleadoController extends Controller
             $empleado = Empleado::create([
                 'usuario_id' => $user->id,
                 'cargo_id' => $datosValidados['cargo_id'],
+                'sucursal_id' => $datosValidados['sucursal_id'] ?? null,
                 'nombre' => $datosValidados['nombre'],
                 'apellido' => $datosValidados['apellido'],
                 'codigo_empleado' => $datosValidados['codigo_empleado'],
+                'activo' => $datosValidados['activo'] ?? true,
             ]);
 
             DB::commit();
             
-            $empleado->load('usuario', 'cargo'); // Cargar relaciones para la respuesta
+            $empleado->load('usuario', 'cargo', 'sucursal'); // Cargar relaciones para la respuesta
             return response()->json($empleado, 201);
 
         } catch (\Exception $e) {
@@ -77,7 +81,7 @@ class EmpleadoController extends Controller
      */
     public function show(Empleado $empleado)
     {
-        $empleado->load('usuario', 'cargo');
+        $empleado->load('usuario', 'cargo', 'sucursal');
         return response()->json($empleado);
     }
 
@@ -94,6 +98,8 @@ class EmpleadoController extends Controller
             // La contraseña es opcional en la actualización
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'cargo_id' => 'required|integer|exists:cargos,id',
+            'sucursal_id' => 'nullable|integer|exists:sucursals,id',
+            'activo' => 'sometimes|boolean',
             'codigo_empleado' => ['nullable', 'string', 'max:50', Rule::unique('empleados', 'codigo_empleado')->ignore($empleado->id)],
         ]);
         
@@ -116,14 +122,16 @@ class EmpleadoController extends Controller
             // 2. Actualizar el Empleado
             $empleado->update([
                 'cargo_id' => $datosValidados['cargo_id'],
+                'sucursal_id' => $datosValidados['sucursal_id'] ?? null,
                 'nombre' => $datosValidados['nombre'],
                 'apellido' => $datosValidados['apellido'],
                 'codigo_empleado' => $datosValidados['codigo_empleado'],
+                'activo' => $datosValidados['activo'] ?? $empleado->activo,
             ]);
 
             DB::commit();
 
-            $empleado->load('usuario', 'cargo');
+            $empleado->load('usuario', 'cargo', 'sucursal');
             return response()->json($empleado);
 
         } catch (\Exception $e) {

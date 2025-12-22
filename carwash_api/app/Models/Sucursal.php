@@ -15,6 +15,11 @@ class Sucursal extends Model
         'nombre',
         'direccion',
         'telefono',
+        'esta_activa',
+    ];
+
+    protected $casts = [
+        'esta_activa' => 'boolean',
     ];
 
     // --- RELACIONES ---

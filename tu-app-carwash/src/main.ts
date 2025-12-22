@@ -5,6 +5,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { APP_INITIALIZER } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { addIcons } from 'ionicons';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 // 1. AGREGAMOS LOS ÍCONOS FALTANTES AQUI (statsChart, calendarNumber, people)
 import {
@@ -89,6 +90,7 @@ bootstrapApplication(AppComponent, {
       provide: APP_INITIALIZER,
       useFactory: initializeIcons,
       multi: true
-    }
+    },
+    provideCharts(withDefaultRegisterables())
   ],
 });

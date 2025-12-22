@@ -11,6 +11,7 @@ class CupoHorario extends Model
 
     protected $fillable = [
         'sucursal_id',
+        'empleado_id',
         'hora_inicio', // ¡Este es un DateTime completo! ej. "2025-11-04 09:00:00"
         'hora_fin',    // ¡Este es un DateTime completo! ej. "2025-11-04 09:30:00"
         'estado',      // 'disponible', 'reservado', 'bloqueado'
@@ -25,6 +26,14 @@ class CupoHorario extends Model
     public function sucursal()
     {
         return $this->belongsTo(Sucursal::class, 'sucursal_id');
+    }
+
+    /**
+     * Un Cupo Horario puede pertenecer a un Empleado (para soportar múltiples cupos por hora).
+     */
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class, 'empleado_id');
     }
 
     /**

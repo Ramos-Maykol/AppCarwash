@@ -1,8 +1,10 @@
-import { Component, inject, ViewChild, AfterViewInit, OnInit } from '@angular/core';
+import { Component, inject, ViewChild, AfterViewInit, effect, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel } from '@ionic/angular/standalone';
 import { MenuController } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { business, time, pricetags, barChart } from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service'; // <--- IMPORTANTE
 
 @Component({
@@ -12,10 +14,11 @@ import { AuthService } from '../../services/auth.service'; // <--- IMPORTANTE
   standalone: true,
   imports: [CommonModule, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel]
 })
-export class NavigationMenuComponent implements AfterViewInit, OnInit {
+export class NavigationMenuComponent implements AfterViewInit {
   private router = inject(Router);
   private menuController = inject(MenuController);
   private authService = inject(AuthService); // <--- Inyectamos el servicio
+  private injector = inject(Injector);
 
   @ViewChild('menu') menu!: IonMenu;
 
@@ -25,24 +28,32 @@ export class NavigationMenuComponent implements AfterViewInit, OnInit {
   // Menú para Clientes
   private customerItems = [
     { title: 'Inicio', icon: 'home', path: '/home', description: 'Página principal' },
-    { title: 'Servicios', icon: 'water', path: '/services', description: 'Ver servicios disponibles' },
-    { title: 'Mis Reservas', icon: 'calendar', path: '/reservations', description: 'Ver mis reservas' },
     { title: 'Reservar', icon: 'add-circle', path: '/booking', description: 'Nueva reserva' },
+    { title: 'Mis Reservas', icon: 'calendar', path: '/reservations', description: 'Ver mis reservas' },
     { title: 'Mis Vehículos', icon: 'car', path: '/vehiculos', description: 'Administrar vehículos' },
     { title: 'Perfil', icon: 'person', path: '/profile', description: 'Mi cuenta' }
   ];
 
   // Menú para Administradores
   private adminItems = [
-    { title: 'Panel Admin', icon: 'stats-chart', path: '/admin/dashboard', description: 'Resumen general' },
-    { title: 'Todas las Reservas', icon: 'calendar-number', path: '/admin/reservas', description: 'Agenda global' },
+    { title: 'Dashboard', icon: 'stats-chart', path: '/admin/dashboard', description: 'Resumen general' },
     { title: 'Empleados', icon: 'people', path: '/admin/empleados', description: 'Gestión de personal' },
-    { title: 'Servicios', icon: 'pricetags', path: '/admin/servicios', description: 'Configurar precios' },
-    { title: 'Mi Perfil', icon: 'person', path: '/profile', description: 'Configuración de cuenta' }
+    { title: 'Sucursales', icon: 'business', path: '/admin/sucursales', description: 'Gestión de sedes' },
+    { title: 'Horarios de Atención', icon: 'time', path: '/admin/horarios', description: 'Definir apertura/cierre' },
+    { title: 'Servicios', icon: 'pricetags', path: '/admin/servicios', description: 'Configurar servicios/precios' },
+    { title: 'Reportes', icon: 'bar-chart', path: '/admin/reportes', description: 'Indicadores y métricas' },
+    { title: 'Reservas', icon: 'calendar-number', path: '/admin/reservas', description: 'Agenda global' },
+    { title: 'Perfil', icon: 'person', path: '/profile', description: 'Configuración de cuenta' }
   ];
 
-  ngOnInit() {
-    this.buildMenu();
+  constructor() {
+    addIcons({ business, time, pricetags, barChart });
+    effect(
+      () => {
+        this.buildMenu();
+      },
+      { injector: this.injector }
+    );
   }
 
   ngAfterViewInit() {

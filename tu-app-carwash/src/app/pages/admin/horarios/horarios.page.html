@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Horarios de Atención</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cargarHorarios()">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-item lines="inset">
+    <ion-label position="stacked">Sucursal</ion-label>
+    <ion-select
+      [(ngModel)]="sucursalId"
+      (ionChange)="onSucursalChange()"
+      interface="popover"
+      placeholder="Selecciona una sucursal">
+      <ion-select-option *ngFor="let s of sucursales" [value]="s.id">{{ s.nombre }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-card *ngFor="let d of dias" class="day-card">
+    <ion-card-header>
+      <ion-card-title>{{ d.label }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label>Abierto</ion-label>
+        <ion-toggle [(ngModel)]="d.abierto"></ion-toggle>
+      </ion-item>
+
+      <div class="hours-grid" [class.disabled]="!d.abierto">
+        <ion-item>
+          <ion-label position="stacked">Apertura</ion-label>
+          <ion-input [(ngModel)]="d.hora_inicio" type="time" [disabled]="!d.abierto"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Cierre</ion-label>
+          <ion-input [(ngModel)]="d.hora_fin" type="time" [disabled]="!d.abierto"></ion-input>
+        </ion-item>
+      </div>
+
+      <p class="hint" *ngIf="!d.abierto">Este día quedará sin horario y no se generarán cupos.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="sticky-footer">
+    <ion-button expand="block" (click)="guardarCambios()">
+      <ion-icon slot="start" name="save"></ion-icon>
+      Guardar cambios
+    </ion-button>
+  </div>
+</ion-content>

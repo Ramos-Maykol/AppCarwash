@@ -14,10 +14,12 @@ class Empleado extends Model
     protected $fillable = [
         'usuario_id',
         'cargo_id',
+        'sucursal_id',
         'nombre',
         'apellido',
         'codigo_empleado',
         'fecha_contratacion',
+        'activo',
     ];
 
     // --- RELACIONES ---
@@ -38,6 +40,14 @@ class Empleado extends Model
     public function cargo()
     {
         return $this->belongsTo(Cargo::class, 'cargo_id');
+    }
+
+    /**
+     * Un Empleado PERTENECE A UNA Sucursal.
+     */
+    public function sucursal()
+    {
+        return $this->belongsTo(Sucursal::class, 'sucursal_id');
     }
 
     /**

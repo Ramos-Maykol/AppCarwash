@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Sucursal;
 use App\Models\CupoHorario;
+use App\Models\Empleado;
 use Carbon\Carbon;
 
 class GenerarCuposHorarios extends Command
@@ -56,6 +57,16 @@ class GenerarCuposHorarios extends Command
         // --- 3. El Bucle Principal de Generación ---
         foreach ($sucursales as $sucursal) {
             $this->info("Procesando sucursal: {$sucursal->nombre}");
+
+            $empleadosActivos = Empleado::query()
+                ->where('sucursal_id', $sucursal->id)
+                ->where('activo', true)
+                ->whereHas('cargo', function ($query) {
+                    $query->where('nombre_cargo', 'LIKE', '%Lavador%');
+                })
+                ->pluck('id');
+
+            $empleadoIdsParaSlots = $empleadosActivos->isNotEmpty() ? $empleadosActivos : collect([null]);
             
             // Bucle por cada día (desde hoy hasta N días)
             for ($i = 0; $i < $diasAGenerar; $i++) {
@@ -87,16 +98,19 @@ class GenerarCuposHorarios extends Command
                     // Esto es súper importante. Intenta buscar un cupo con esta sucursal y hora de inicio.
                     // Si NO lo encuentra, lo crea con los datos del segundo array.
                     // Esto evita duplicados si corres el comando mil veces.
-                    CupoHorario::firstOrCreate(
-                        [
-                            'sucursal_id' => $sucursal->id,
-                            'hora_inicio' => $inicioCupo,
-                        ],
-                        [
-                            'hora_fin' => $finCupo,
-                            'estado' => 'disponible',
-                        ]
-                    );
+                    foreach ($empleadoIdsParaSlots as $empleadoId) {
+                        CupoHorario::firstOrCreate(
+                            [
+                                'sucursal_id' => $sucursal->id,
+                                'hora_inicio' => $inicioCupo,
+                                'empleado_id' => $empleadoId,
+                            ],
+                            [
+                                'hora_fin' => $finCupo,
+                                'estado' => 'disponible',
+                            ]
+                        );
+                    }
 
                     // Movernos al siguiente cupo
                     $horaActualCupo->addMinutes($duracionCupo);

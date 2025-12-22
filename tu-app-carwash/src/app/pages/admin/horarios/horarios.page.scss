@@ -1,0 +1,34 @@
+.day-card {
+  margin-top: 12px;
+}
+
+.hours-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.hours-grid.disabled {
+  opacity: 0.6;
+}
+
+.hint {
+  margin: 10px 0 0 0;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+}
+
+.sticky-footer {
+  position: sticky;
+  bottom: 0;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background: var(--ion-background-color);
+}
+
+@media (max-width: 480px) {
+  .hours-grid {
+    grid-template-columns: 1fr;
+  }
+}

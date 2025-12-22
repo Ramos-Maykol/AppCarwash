@@ -51,7 +51,6 @@ export class ReservasPage implements OnInit {
 
     this.reservaService.getReservas().subscribe({
       next: (response) => {
-        console.log('Reservas recibidas:', response);
         this.reservas = response.data; // Laravel paginado devuelve 'data'
         this.isLoading = false;
         if (event) event.target.complete();

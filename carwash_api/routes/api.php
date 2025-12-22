@@ -16,7 +16,7 @@ use App\Http\Controllers\Admin\SucursalController as AdminSucursalController;
 use App\Http\Controllers\Admin\HorarioTrabajoController as AdminHorarioTrabajoController;
 // 1. IMPORTAMOS EL NUEVO CONTROLADOR ADMIN DE CUPOS
 use App\Http\Controllers\Admin\CupoHorarioController as AdminCupoHorarioController;
-
+use App\Http\Controllers\Admin\ReportController;
 
 /*
 ... (descripción)
@@ -92,5 +92,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     // 2. AÑADIMOS EL CRUD DE CUPOS DE HORARIO (Agenda Real)
     // GET, POST, PUT, DELETE /api/admin/cupos-horarios
     Route::apiResource('/cupos-horarios', AdminCupoHorarioController::class);
+
+    Route::get('reportes/data', [ReportController::class, 'getReportData']);
 });
 

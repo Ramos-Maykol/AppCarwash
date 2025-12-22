@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CupoHorario;
 use App\Models\Sucursal;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 
 class CupoHorarioController extends Controller
@@ -38,7 +39,16 @@ class CupoHorarioController extends Controller
     {
         $datosValidados = $request->validate([
             'sucursal_id' => 'required|integer|exists:sucursals,id',
-            'hora_inicio' => 'required|date_format:Y-m-d H:i:s|unique:cupos_horarios,hora_inicio,NULL,id,sucursal_id,'.$request->sucursal_id,
+            'empleado_id' => 'nullable|integer|exists:empleados,id',
+            'hora_inicio' => [
+                'required',
+                'date_format:Y-m-d H:i:s',
+                Rule::unique('cupo_horarios', 'hora_inicio')->where(function ($query) use ($request) {
+                    return $query
+                        ->where('sucursal_id', $request->sucursal_id)
+                        ->where('empleado_id', $request->input('empleado_id'));
+                }),
+            ],
             'hora_fin' => 'required|date_format:Y-m-d H:i:s|after:hora_inicio',
             'estado' => 'required|string|in:disponible,reservado,bloqueado',
         ]);
@@ -64,7 +74,17 @@ class CupoHorarioController extends Controller
         $datosValidados = $request->validate([
             'estado' => 'required|string|in:disponible,reservado,bloqueado',
             // Opcionalmente, permitir cambiar horas si no está reservado
-            'hora_inicio' => 'sometimes|date_format:Y-m-d H:i:s|unique:cupos_horarios,hora_inicio,'.$cupoHorario->id.',id,sucursal_id,'.$cupoHorario->sucursal_id,
+            'empleado_id' => 'sometimes|nullable|integer|exists:empleados,id',
+            'hora_inicio' => [
+                'sometimes',
+                'date_format:Y-m-d H:i:s',
+                Rule::unique('cupo_horarios', 'hora_inicio')->ignore($cupoHorario->id)->where(function ($query) use ($request, $cupoHorario) {
+                    $empleadoId = $request->has('empleado_id') ? $request->input('empleado_id') : $cupoHorario->empleado_id;
+                    return $query
+                        ->where('sucursal_id', $cupoHorario->sucursal_id)
+                        ->where('empleado_id', $empleadoId);
+                }),
+            ],
             'hora_fin' => 'sometimes|date_format:Y-m-d H:i:s|after:hora_inicio',
         ]);
 

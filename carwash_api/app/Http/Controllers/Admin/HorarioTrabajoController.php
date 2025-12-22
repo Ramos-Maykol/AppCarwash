@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HorarioTrabajo;
-use App\Models\Sucursal;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class HorarioTrabajoController extends Controller
@@ -29,24 +31,53 @@ class HorarioTrabajoController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('Payload recibido horarios trabajo', $request->all());
+
         $datosValidados = $request->validate([
             'sucursal_id' => 'required|integer|exists:sucursals,id',
-            'dia_semana' => [
+            'horarios' => 'required|array',
+            'horarios.*.dia_semana' => [
                 'required',
                 'integer',
-                'between:1,7', // 1 (Lunes) a 7 (Domingo)
-                // Regla Única: No se puede definir dos horarios para el mismo día en la misma sucursal
-                Rule::unique('horarios_trabajo')->where(function ($query) use ($request) {
-                    return $query->where('sucursal_id', $request->sucursal_id);
-                })
+                'between:1,7',
             ],
-            'hora_inicio' => 'required|date_format:H:i', // Formato 24h ej. 09:00
-            'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
+            'horarios.*.hora_inicio' => 'required|date_format:H:i',
+            'horarios.*.hora_fin' => 'required|date_format:H:i',
         ]);
 
-        $horario = HorarioTrabajo::create($datosValidados);
+        foreach ($datosValidados['horarios'] as $horarioItem) {
+            $inicio = Carbon::createFromFormat('H:i', $horarioItem['hora_inicio']);
+            $fin = Carbon::createFromFormat('H:i', $horarioItem['hora_fin']);
+            if ($fin <= $inicio) {
+                return response()->json(['error' => "En el día {$horarioItem['dia_semana']} la hora fin debe ser posterior a la hora inicio"], 422);
+            }
+        }
 
-        return response()->json($horario, 201);
+        try {
+            $resultado = DB::transaction(function () use ($datosValidados) {
+                HorarioTrabajo::where('sucursal_id', $datosValidados['sucursal_id'])->delete();
+
+                $creados = [];
+                foreach ($datosValidados['horarios'] as $entrada) {
+                    $entrada['sucursal_id'] = $datosValidados['sucursal_id'];
+                    $creados[] = HorarioTrabajo::create($entrada);
+                }
+
+                return $creados;
+            });
+
+            return response()->json([
+                'data' => $resultado,
+                'count' => count($resultado),
+            ], 201);
+        } catch (\Throwable $e) {
+            Log::error('Error guardando horarios de trabajo', [
+                'error' => $e->getMessage(),
+                'request' => $request->all(),
+            ]);
+
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
