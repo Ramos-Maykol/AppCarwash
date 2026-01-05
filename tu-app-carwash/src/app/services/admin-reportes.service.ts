@@ -7,8 +7,6 @@ import { saveAs } from 'file-saver';
 // Librerías de Exportación
 import * as XLSX from 'xlsx';
 import { Document, Packer, Paragraph, Table, TableCell, TableRow, WidthType, HeadingLevel, TextRun } from 'docx';
-
-// --- IMPORTACIONES PDFMAKE CORREGIDAS ---
 import * as pdfMakePkg from "pdfmake/build/pdfmake";
 import * as pdfFontsPkg from "pdfmake/build/vfs_fonts";
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
@@ -119,9 +117,7 @@ export class AdminReportesService {
 
   // 4. GENERAR PDF (PDFMake)
   generarPDF(datos: any[]) {
-    // Definir cuerpo de la tabla
     const bodyData = [
-      // Encabezados
       [
         { text: 'Fecha', bold: true },
         { text: 'Cliente', bold: true },
@@ -129,7 +125,6 @@ export class AdminReportesService {
         { text: 'Monto', bold: true },
         { text: 'Estado', bold: true }
       ],
-      // Datos
       ...datos.map(p => [
         p.fecha || '',
         p.cliente || '',
@@ -138,8 +133,6 @@ export class AdminReportesService {
         p.estado || ''
       ])
     ];
-
-    // Definición del documento
     const docDefinition: TDocumentDefinitions = {
       content: [
         { text: 'Reporte Oficial Carwash', style: 'header' },
@@ -161,8 +154,6 @@ export class AdminReportesService {
         }
       }
     };
-
-    // Usamos la variable local 'pdfMake' que ya tiene las fuentes asignadas
     pdfMake.createPdf(docDefinition).download(`Reporte_Carwash_${Date.now()}.pdf`);
   }
 }

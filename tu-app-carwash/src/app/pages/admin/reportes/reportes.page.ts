@@ -45,6 +45,8 @@ export class ReportesPage implements OnInit {
   });
 
   // Configuración de Gráficos
+
+
   ingresosBarData = signal<ChartConfiguration<'bar'>['data']>({ labels: [], datasets: [] });
   ingresosBarOptions: ChartOptions<'bar'> = { responsive: true, maintainAspectRatio: false };
 
@@ -92,8 +94,8 @@ export class ReportesPage implements OnInit {
     // 2. Gráfico de Pie (Distribución Estados)
     // El backend envía un objeto: {'completado': 10, 'pendiente': 5}
     const estadosObj = data.kpis.distribucion_estado || {};
-    const labelsEstado = Object.keys(estadosObj); // ['completado', 'pendiente']
-    const valoresEstado = Object.values(estadosObj); // [10, 5]
+    const labelsEstado = Object.keys(estadosObj);
+    const valoresEstado = Object.values(estadosObj);
 
     this.estadosPieData.set({
       labels: labelsEstado,
@@ -102,7 +104,6 @@ export class ReportesPage implements OnInit {
   }
 
   async descargar(type: 'pdf' | 'excel' | 'word') {
-    // Validamos que tengamos datos cargados antes de intentar descargar
     const dataActual = this.fullData()?.data;
     
     if (!dataActual || dataActual.length === 0) {
@@ -114,8 +115,6 @@ export class ReportesPage implements OnInit {
     await loading.present();
 
     try {
-      // AQUÍ OCURRE LA MAGIA DEL CLIENT-SIDE
-      // Ya no pedimos nada al servidor, usamos los datos que ya tenemos en memoria
       if (type === 'word') {
         await this.reportesService.generarWord(dataActual);
       } else if (type === 'excel') {
