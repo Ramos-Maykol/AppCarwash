@@ -34,7 +34,7 @@ class ServicioController extends Controller
             // Validar que 'precios' sea un array y que al menos tenga un elemento
             'precios' => 'required|array|min:1',
             // Validar cada elemento dentro del array 'precios'
-            'precios.*.tipo_vehiculo_id' => 'required|integer|exists:tipos_vehiculo,id',
+            'precios.*.tipo_vehiculo_id' => 'required|integer|exists:tipo_vehiculos,id',
             'precios.*.precio' => 'required|numeric|min:0',
         ]);
 
@@ -98,7 +98,7 @@ class ServicioController extends Controller
             'duracion_estimada_minutos' => 'nullable|integer|min:5',
             'duracion_estimada_min' => 'nullable|integer|min:5',
             'precios' => 'required|array|min:1',
-            'precios.*.tipo_vehiculo_id' => 'required|integer|exists:tipos_vehiculo,id',
+            'precios.*.tipo_vehiculo_id' => 'required|integer|exists:tipo_vehiculos,id',
             'precios.*.precio' => 'required|numeric|min:0',
         ]);
 

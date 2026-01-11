@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {
   IonContent,
   IonHeader,
@@ -18,6 +19,8 @@ import {
   IonToggle,
   IonButton,
   IonIcon,
+  IonFab,
+  IonFabButton,
   ToastController,
   LoadingController,
 } from '@ionic/angular/standalone';
@@ -36,6 +39,9 @@ import {
   templateUrl: './empleados.page.html',
   styleUrls: ['./empleados.page.scss'],
   standalone: true,
+  host: {
+    class: 'ion-page',
+  },
   imports: [
     CommonModule,
     FormsModule,
@@ -55,9 +61,12 @@ import {
     IonToggle,
     IonButton,
     IonIcon,
+    IonFab,
+    IonFabButton,
   ],
 })
 export class EmpleadosPage implements OnInit {
+  private router = inject(Router);
   private adminEmpleadoService = inject(AdminEmpleadoService);
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
@@ -84,6 +93,10 @@ export class EmpleadosPage implements OnInit {
 
   ngOnInit(): void {
     this.cargarDatos();
+  }
+
+  irCrear() {
+    this.router.navigate(['/admin/empleados/crear']);
   }
 
   async cargarDatos() {

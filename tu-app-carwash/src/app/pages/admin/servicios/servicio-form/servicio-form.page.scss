@@ -1,0 +1,38 @@
+
+ ion-footer {
+   background: var(--ion-background-color);
+   padding-bottom: var(--ion-safe-area-bottom, 0);
+ }
+
+ .footer-toolbar {
+   --border-width: 0;
+ }
+
+ ion-content {
+   --padding-top: 0px;
+ }
+
+ :host {
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+ }
+
+ ion-content {
+   flex: 1 1 auto;
+   --padding-bottom: calc(72px + var(--ion-safe-area-bottom, 0));
+ }
+
+ ion-footer {
+   position: sticky;
+   bottom: 0;
+   z-index: 10;
+ }
+
+ ion-content::part(scroll) {
+   padding-top: 0 !important;
+ }
+
+ ion-card:first-of-type {
+   margin-top: 0;
+ }

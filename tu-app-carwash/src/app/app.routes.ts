@@ -53,7 +53,11 @@ export const routes: Routes = [
     redirectTo: 'auth/login',
     pathMatch: 'full',
   },
-  
+  {
+    path: 'admin',
+    redirectTo: 'admin/dashboard',
+    pathMatch: 'full',
+  },
   // --- CORRECCIÓN AQUÍ ---
   {
     // Antes tenías solo 'dashboard', ahora coincide con lo que pide el login
@@ -108,10 +112,22 @@ export const routes: Routes = [
     canActivate: [authGuard, adminGuard]
   },
   {
+    path: 'admin/servicios/nuevo',
+    loadComponent: () => import('./pages/admin/servicios/servicio-form/servicio-form.page').then(m => m.ServicioFormPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/servicios/editar/:id',
+    loadComponent: () => import('./pages/admin/servicios/servicio-form/servicio-form.page').then(m => m.ServicioFormPage),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
     path: 'admin/reportes',
     loadComponent: () => import('./pages/admin/reportes/reportes.page').then(m => m.ReportesPage),
     canActivate: [authGuard, adminGuard]
   },
-
-
+  {
+    path: '**',
+    redirectTo: 'auth/login',
+  },
 ];

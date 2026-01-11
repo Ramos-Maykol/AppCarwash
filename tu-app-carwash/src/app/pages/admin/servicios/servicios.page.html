@@ -5,9 +5,68 @@
       <ion-back-button defaultHref="/admin/dashboard"></ion-back-button>
     </ion-buttons>
     <ion-title>Servicios (Admin)</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cargarTodo()">
+        <ion-icon slot="icon-only" name="refresh"></ion-icon>
+      </ion-button>
+      <ion-button (click)="irNuevo()">
+        <ion-icon slot="start" name="add"></ion-icon>
+        Nuevo
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <p>Pantalla en construcción. Aquí irá la gestión de servicios/precios.</p>
+  <ion-refresher slot="fixed" (ionRefresh)="cargarTodo($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list *ngIf="servicios().length; else sinDatos">
+    <ion-item *ngFor="let s of servicios()">
+      <ion-label class="ion-text-wrap">
+        <h2>{{ s.nombre }}</h2>
+        <p *ngIf="s.descripcion">{{ s.descripcion }}</p>
+        <p>
+          Duración: {{ s.duracion_estimada_minutos }} min
+          <span style="margin-left: 8px;">|</span>
+          Desde:
+          <ng-container *ngIf="obtenerPrecioBaseNumero(s) !== null; else sinPrecio">
+            {{ obtenerPrecioBaseNumero(s) | currency: currencyCode:'symbol':'1.2-2' }}
+          </ng-container>
+          <ng-template #sinPrecio>-</ng-template>
+        </p>
+      </ion-label>
+
+      <ion-buttons slot="end">
+        <ion-button fill="clear" (click)="irEditar(s)">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" color="danger" (click)="eliminar(s)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ng-template #sinDatos>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Servicios</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div style="text-align: center; padding: 12px 0;">
+          <ion-icon name="pricetags" style="font-size: 48px; opacity: 0.75;"></ion-icon>
+          <h2 style="margin: 12px 0 6px 0;">No hay servicios registrados</h2>
+          <ion-text color="medium">¡Crea el primero para configurar precios por tipo de vehículo!</ion-text>
+          <div style="margin-top: 14px;">
+            <ion-button (click)="irNuevo()">
+              <ion-icon slot="start" name="add"></ion-icon>
+              Crear servicio
+            </ion-button>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
 </ion-content>

@@ -1,3 +1,28 @@
-ion-list {
-  margin-top: 12px;
+// empleados-list.page.scss
+
+// Ya no necesitas :host porque global.scss lo maneja
+ion-content {
+  --padding-top: 10px;
+}
+
+.empleados-list {
+  margin-top: 0;
+  
+  ion-item {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    
+    &:last-child {
+      margin-bottom: 20px; // Espacio extra para el último item
+    }
+  }
+}
+
+// El FAB se maneja desde global.scss, pero puedes personalizar aquí
+ion-fab-button {
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  
+  &:hover {
+    --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
 }

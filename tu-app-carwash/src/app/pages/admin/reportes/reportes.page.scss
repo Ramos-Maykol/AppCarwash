@@ -1,51 +1,223 @@
-
-.kpi {
-  font-size: 1.8rem;
-  font-weight: 700;
+// Contenedor principal con padding apropiado
+.content-wrapper {
+  padding: 16px;
+  padding-bottom: 40px; // Espacio extra al final
+  min-height: 100%;
 }
 
-.chart {
-  height: 280px;
-}
-
-.export-actions {
+// Grid de KPIs
+.kpi-grid {
   padding: 0;
+  margin-bottom: 8px;
 }
 
-.export-btn {
-  height: 44px;
+// Cards de KPI
+.kpi-card {
+  margin: 0;
+  height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  ion-card-header {
+    padding-bottom: 8px;
+  }
+
+  ion-card-content {
+    padding-top: 0;
+  }
+}
+
+.kpi-title {
+  font-size: 0.875rem;
   font-weight: 600;
-  letter-spacing: 0.2px;
-  --border-radius: 10px;
-  --padding-start: 14px;
-  --padding-end: 14px;
+  color: var(--neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.export-btn ion-icon {
-  font-size: 18px;
+.kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-top: 4px;
+  
+  &--warning {
+    color: var(--warning-color);
+  }
+}
+
+// Cards de gráficos
+.chart-card {
+  margin: 16px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  ion-card-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  ion-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--neutral-800);
+  }
+
+  ion-card-content {
+    padding: 20px 16px;
+  }
+}
+
+// Contenedores de gráficos
+.chart-container {
+  position: relative;
+  height: 320px;
+  width: 100%;
+  
+  &--pie {
+    height: 360px;
+  }
+
+  canvas {
+    max-height: 100%;
+  }
+}
+
+// Card de exportación
+.export-card {
+  margin: 16px 0 24px 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  ion-card-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+  }
+}
+
+.export-grid {
+  padding: 0;
+  margin-top: 8px;
+}
+
+// Botones de exportación
+.export-btn {
+  height: 48px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.3px;
+  --border-radius: 10px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  text-transform: none;
+  margin: 0;
+  transition: all 0.2s ease;
+
+  ion-icon {
+    font-size: 20px;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 }
 
 .export-btn--pdf {
-  --background: #7a1f1f;
-  --color: #fff;
+  --background: #dc2626;
+  --background-hover: #b91c1c;
+  --color: #ffffff;
+  --box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
 .export-btn--excel {
-  --background: #1f7a3a;
-  --color: #fff;
+  --background: #059669;
+  --background-hover: #047857;
+  --color: #ffffff;
+  --box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
 }
 
 .export-btn--word {
-  --background: #2b579a;
-  --color: #fff;
+  --background: #2563eb;
+  --background-hover: #1d4ed8;
+  --color: #ffffff;
+  --box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
 }
 
+// Responsive - Tablets
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 12px;
+  }
+
+  .kpi-value {
+    font-size: 1.75rem;
+  }
+
+  .chart-container {
+    height: 280px;
+    
+    &--pie {
+      height: 320px;
+    }
+  }
+}
+
+// Responsive - Móviles
 @media (max-width: 480px) {
-  .chart {
+  .content-wrapper {
+    padding: 8px;
+    padding-bottom: 32px;
+  }
+
+  .kpi-card {
+    margin-bottom: 8px;
+  }
+
+  .kpi-title {
+    font-size: 0.8125rem;
+  }
+
+  .kpi-value {
+    font-size: 1.5rem;
+  }
+
+  .chart-card {
+    margin: 12px 0;
+  }
+
+  .chart-container {
     height: 240px;
+    
+    &--pie {
+      height: 280px;
+    }
   }
 
   .export-btn {
     height: 46px;
+    font-size: 0.875rem;
+    
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+// Mejora de accesibilidad
+@media (prefers-reduced-motion: reduce) {
+  .kpi-card,
+  .export-btn {
+    transition: none;
   }
 }

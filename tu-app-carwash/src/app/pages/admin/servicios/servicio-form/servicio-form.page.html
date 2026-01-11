@@ -1,0 +1,77 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/servicios"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ id ? 'Editar Servicio' : 'Nuevo Servicio' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Datos del servicio</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Nombre</ion-label>
+          <ion-input
+            [value]="form().nombre"
+            (ionInput)="updateNombre($event)"
+            placeholder="Ej: Lavado Premium"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Duración estimada (min)</ion-label>
+          <ion-input
+            type="number"
+            inputmode="numeric"
+            [value]="form().duracion_estimada_minutos"
+            (ionInput)="updateDuracion($event)"
+            placeholder="30"
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Descripción</ion-label>
+          <ion-input
+            [value]="form().descripcion"
+            (ionInput)="updateDescripcion($event)"
+            placeholder="Opcional"
+          ></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Precios por tipo de vehículo</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let tv of tiposVehiculo()">
+          <ion-label class="ion-text-wrap">{{ tv.nombre }}</ion-label>
+          <ion-input
+            type="number"
+            inputmode="decimal"
+            placeholder="0.00"
+            helperText="Precio base para este tipo de vehículo"
+            [value]="preciosPorTipo()[tv.id]"
+            (ionInput)="updatePrecio(tv.id, $event)"
+          ></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar class="footer-toolbar">
+    <ion-button expand="block" (click)="guardar()" class="ion-margin">
+      Guardar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

@@ -66,9 +66,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     ]);
 
     // Gestión de Servicios (CRUD Completo)
-    Route::apiResource('/servicios', AdminServicioController::class)->except([
-        'index', 'show'
-    ]);
+    Route::apiResource('/servicios', AdminServicioController::class);
 
     // Gestión de Cargos
     Route::apiResource('/cargos', AdminCargoController::class);
@@ -77,9 +75,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::apiResource('/empleados', AdminEmpleadoController::class);
 
     // Gestión de Tipos de Vehículo
-    Route::apiResource('/tipos-vehiculo', AdminTipoVehiculoController::class)->except([
-        'index'
-    ]);
+    Route::apiResource('/tipos-vehiculo', AdminTipoVehiculoController::class);
 
     // Gestión de Sucursales
     Route::apiResource('/sucursales', AdminSucursalController::class)->except([

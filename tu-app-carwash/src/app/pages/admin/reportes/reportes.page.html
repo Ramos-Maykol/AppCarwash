@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
@@ -13,101 +13,109 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" size-md="4">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Total Ingresos</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="kpi">{{ kpiTotalIngresos() | number:'1.2-2' }}</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+<ion-content [fullscreen]="true">
+  <div class="content-wrapper">
+    
+    <!-- KPIs Cards -->
+    <ion-grid class="kpi-grid">
+      <ion-row>
+        <ion-col size="12" size-md="4">
+          <ion-card class="kpi-card">
+            <ion-card-header>
+              <ion-card-title class="kpi-title">Total Ingresos</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="kpi-value">S/ {{ kpiTotalIngresos() | number:'1.2-2' }}</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
 
-      <ion-col size="12" size-md="4">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Total Lavados</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="kpi">{{ kpiTotalLavados() }}</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+        <ion-col size="12" size-md="4">
+          <ion-card class="kpi-card">
+            <ion-card-header>
+              <ion-card-title class="kpi-title">Total Lavados</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="kpi-value">{{ kpiTotalLavados() }}</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
 
-      <ion-col size="12" size-md="4">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Pendientes</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <div class="kpi">{{ kpiPendientes() }}</div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        <ion-col size="12" size-md="4">
+          <ion-card class="kpi-card">
+            <ion-card-header>
+              <ion-card-title class="kpi-title">Pendientes</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="kpi-value kpi-value--warning">{{ kpiPendientes() }}</div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Tendencia de Ingresos</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="chart">
-        <canvas baseChart
-          [type]="'bar'"
-          [data]="ingresosBarData()"
-          [options]="ingresosBarOptions">
-        </canvas>
-      </div>
-    </ion-card-content>
-  </ion-card>
+    <!-- Gráfico de Tendencia -->
+    <ion-card class="chart-card">
+      <ion-card-header>
+        <ion-card-title>Tendencia de Ingresos</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="chart-container">
+          <canvas baseChart
+            [type]="'bar'"
+            [data]="ingresosBarData()"
+            [options]="ingresosBarOptions">
+          </canvas>
+        </div>
+      </ion-card-content>
+    </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Distribución por Estado</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <div class="chart">
-        <canvas baseChart
-          [type]="'pie'"
-          [data]="estadosPieData()"
-          [options]="estadosPieOptions">
-        </canvas>
-      </div>
-    </ion-card-content>
-  </ion-card>
+    <!-- Gráfico de Estados -->
+    <ion-card class="chart-card">
+      <ion-card-header>
+        <ion-card-title>Distribución por Estado</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="chart-container chart-container--pie">
+          <canvas baseChart
+            [type]="'pie'"
+            [data]="estadosPieData()"
+            [options]="estadosPieOptions">
+          </canvas>
+        </div>
+      </ion-card-content>
+    </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Exportar Datos</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-grid class="export-actions">
-        <ion-row>
-          <ion-col size="12" size-md="4">
-            <ion-button class="export-btn export-btn--pdf" expand="block" (click)="descargar('pdf')">
-              <ion-icon slot="start" name="download"></ion-icon>
-              PDF
-            </ion-button>
-          </ion-col>
-          <ion-col size="12" size-md="4">
-            <ion-button class="export-btn export-btn--excel" expand="block" (click)="descargar('excel')">
-              <ion-icon slot="start" name="download"></ion-icon>
-              Excel
-            </ion-button>
-          </ion-col>
-          <ion-col size="12" size-md="4">
-            <ion-button class="export-btn export-btn--word" expand="block" (click)="descargar('word')">
-              <ion-icon slot="start" name="download"></ion-icon>
-              Word
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
+    <!-- Botones de Exportación -->
+    <ion-card class="export-card">
+      <ion-card-header>
+        <ion-card-title>Exportar Datos</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid class="export-grid">
+          <ion-row>
+            <ion-col size="12" size-md="4">
+              <ion-button class="export-btn export-btn--pdf" expand="block" (click)="descargar('pdf')">
+                <ion-icon slot="start" name="download"></ion-icon>
+                Descargar PDF
+              </ion-button>
+            </ion-col>
+            <ion-col size="12" size-md="4">
+              <ion-button class="export-btn export-btn--excel" expand="block" (click)="descargar('excel')">
+                <ion-icon slot="start" name="download"></ion-icon>
+                Descargar Excel
+              </ion-button>
+            </ion-col>
+            <ion-col size="12" size-md="4">
+              <ion-button class="export-btn export-btn--word" expand="block" (click)="descargar('word')">
+                <ion-icon slot="start" name="download"></ion-icon>
+                Descargar Word
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
 </ion-content>

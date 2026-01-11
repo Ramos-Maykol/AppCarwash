@@ -10,7 +10,6 @@ import { addIcons } from 'ionicons';
 import { download, refresh } from 'ionicons/icons';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
-// Importamos el servicio actualizado y la interfaz
 import { AdminReportesService, ReportData } from 'src/app/services/admin-reportes.service';
 
 @Component({
@@ -30,28 +29,57 @@ export class ReportesPage implements OnInit {
   private toastCtrl = inject(ToastController);
   private loadingCtrl = inject(LoadingController);
 
-  // Signal para guardar TODA la respuesta del servidor
   fullData = signal<ReportData | null>(null);
 
-  // Computeds para los KPIs (conectados al nuevo JSON del Backend)
   kpiTotalIngresos = computed(() => this.fullData()?.kpis?.total_ingresos ?? 0);
   kpiTotalLavados = computed(() => this.fullData()?.kpis?.total_lavados ?? 0);
   
-  // Usamos un pequeño truco para contar pendientes si el backend devuelve un objeto
   kpiPendientes = computed(() => {
     const dist = this.fullData()?.kpis?.distribucion_estado;
-    return dist ? (dist['pendiente'] || 0) : 0; 
-    // Ajusta 'pendiente' según cómo guardes el estado en BD (mayus/minus)
+    return dist ? (dist['pendiente'] || dist['Pendiente'] || 0) : 0;
   });
 
-  // Configuración de Gráficos
+  ingresosBarData = signal<ChartConfiguration<'bar'>['data']>({ 
+    labels: [], 
+    datasets: [] 
+  });
+  
+  ingresosBarOptions: ChartOptions<'bar'> = { 
+    responsive: true, 
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function(value) {
+            return 'S/ ' + value;
+          }
+        }
+      }
+    }
+  };
 
-
-  ingresosBarData = signal<ChartConfiguration<'bar'>['data']>({ labels: [], datasets: [] });
-  ingresosBarOptions: ChartOptions<'bar'> = { responsive: true, maintainAspectRatio: false };
-
-  estadosPieData = signal<ChartConfiguration<'pie'>['data']>({ labels: [], datasets: [] });
-  estadosPieOptions: ChartOptions<'pie'> = { responsive: true, maintainAspectRatio: false };
+  estadosPieData = signal<ChartConfiguration<'pie'>['data']>({ 
+    labels: [], 
+    datasets: [] 
+  });
+  
+  estadosPieOptions: ChartOptions<'pie'> = { 
+    responsive: true, 
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+      }
+    }
+  };
 
   constructor() {
     addIcons({ download, refresh });
@@ -65,11 +93,10 @@ export class ReportesPage implements OnInit {
     const loading = await this.loadingCtrl.create({ message: 'Obteniendo datos...' });
     await loading.present();
 
-    // Llamamos al nuevo método unificado
     this.reportesService.getReportData().subscribe({
       next: (resp) => {
-        this.fullData.set(resp); // Guardamos todo el JSON
-        this.buildCharts(resp);  // Construimos gráficas
+        this.fullData.set(resp);
+        this.buildCharts(resp);
         loading.dismiss();
       },
       error: async (err: any) => {
@@ -81,25 +108,40 @@ export class ReportesPage implements OnInit {
   }
 
   private buildCharts(data: ReportData) {
-    // 1. Gráfico de Barras (Tendencia de Ingresos)
-    // El backend ahora envía 'tendencia_ingresos' con {dia, total}
+    // Gráfico de Barras (Tendencia de Ingresos)
     const labelsDia = (data.kpis.tendencia_ingresos || []).map((x) => x.dia);
     const valoresDia = (data.kpis.tendencia_ingresos || []).map((x) => Number(x.total));
 
     this.ingresosBarData.set({
       labels: labelsDia,
-      datasets: [{ data: valoresDia, label: 'Ingresos por Día', backgroundColor: '#3880ff' }],
+      datasets: [{ 
+        data: valoresDia, 
+        label: 'Ingresos por Día',
+        backgroundColor: '#3b82f6',
+        borderColor: '#2563eb',
+        borderWidth: 1,
+        borderRadius: 6,
+      }],
     });
 
-    // 2. Gráfico de Pie (Distribución Estados)
-    // El backend envía un objeto: {'completado': 10, 'pendiente': 5}
+    // Gráfico de Pie (Distribución Estados)
     const estadosObj = data.kpis.distribucion_estado || {};
     const labelsEstado = Object.keys(estadosObj);
     const valoresEstado = Object.values(estadosObj);
 
     this.estadosPieData.set({
       labels: labelsEstado,
-      datasets: [{ data: valoresEstado, backgroundColor: ['#2dd36f', '#ffc409', '#eb445a'] }],
+      datasets: [{ 
+        data: valoresEstado, 
+        backgroundColor: [
+          '#10b981', // Verde - Completado
+          '#f59e0b', // Amarillo - Pendiente
+          '#ef4444', // Rojo - Cancelado
+          '#6366f1', // Morado - Otros
+        ],
+        borderWidth: 2,
+        borderColor: '#ffffff',
+      }],
     });
   }
 
@@ -133,7 +175,12 @@ export class ReportesPage implements OnInit {
   }
 
   private async mostrarToast(message: string, color: string) {
-    const toast = await this.toastCtrl.create({ message, duration: 2500, color, position: 'bottom' });
+    const toast = await this.toastCtrl.create({ 
+      message, 
+      duration: 2500, 
+      color, 
+      position: 'bottom' 
+    });
     await toast.present();
   }
 }

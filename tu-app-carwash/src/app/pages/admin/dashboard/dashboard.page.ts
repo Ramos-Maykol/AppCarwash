@@ -9,7 +9,8 @@ import {
   IonButtons, 
   IonMenuButton,
   IonButton,
-  IonIcon 
+  IonIcon,
+  IonRippleEffect 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { 
@@ -37,7 +38,8 @@ import { AuthService } from 'src/app/services/auth.service';
     IonButtons, 
     IonMenuButton,
     IonButton,
-    IonIcon
+    IonIcon,
+    IonRippleEffect
   ]
 })
 export class DashboardPage implements OnInit {

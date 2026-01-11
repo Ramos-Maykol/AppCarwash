@@ -4,7 +4,21 @@ import { CommonModule } from '@angular/common';
 import { IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonIcon, IonLabel } from '@ionic/angular/standalone';
 import { MenuController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { business, time, pricetags, barChart } from 'ionicons/icons';
+import {
+  addCircle,
+  barChart,
+  business,
+  calendar,
+  calendarNumber,
+  car,
+  home,
+  logOutOutline,
+  people,
+  person,
+  pricetags,
+  statsChart,
+  time,
+} from 'ionicons/icons';
 import { AuthService } from '../../services/auth.service'; // <--- IMPORTANTE
 
 @Component({
@@ -47,7 +61,21 @@ export class NavigationMenuComponent implements AfterViewInit {
   ];
 
   constructor() {
-    addIcons({ business, time, pricetags, barChart });
+    addIcons({
+      addCircle,
+      barChart,
+      business,
+      calendar,
+      calendarNumber,
+      car,
+      home,
+      logOutOutline,
+      people,
+      person,
+      pricetags,
+      statsChart,
+      time,
+    });
     effect(
       () => {
         this.buildMenu();
