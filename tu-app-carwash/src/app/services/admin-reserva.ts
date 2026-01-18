@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { ApiService } from './api.service';
 
 // --- INTERFACES QUE MAPEAN TU LARAVEL ---
 
@@ -63,9 +62,7 @@ export interface ReservaResponse {
   providedIn: 'root'
 })
 export class AdminReservaService {
-  private http = inject(HttpClient);
-  // Asegúrate de que environment.apiUrl apunte a tu backend (ej: http://localhost:8000/api)
-  private apiUrl = environment.apiUrl + '/admin/reservas'; 
+  private api = inject(ApiService);
 
   constructor() { }
 
@@ -73,19 +70,18 @@ export class AdminReservaService {
    * Obtener reservas con filtros opcionales
    */
   getReservas(filtros?: { fecha?: string, estado?: string, page?: number }): Observable<ReservaResponse> {
-    let params = new HttpParams();
-    
-    if (filtros?.fecha) params = params.set('fecha', filtros.fecha);
-    if (filtros?.estado) params = params.set('estado', filtros.estado);
-    if (filtros?.page) params = params.set('page', filtros.page);
+    const params: Record<string, string> = {};
+    if (filtros?.fecha) params['fecha'] = filtros.fecha;
+    if (filtros?.estado) params['estado'] = filtros.estado;
+    if (typeof filtros?.page === 'number') params['page'] = String(filtros.page);
 
-    return this.http.get<ReservaResponse>(this.apiUrl, { params });
+    return this.api.get<ReservaResponse>('/admin/reservas', params);
   }
 
   /**
    * Actualizar estado de la reserva (PUT /api/admin/reservas/{id})
    */
   updateEstado(id: number, nuevoEstado: string): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, { estado: nuevoEstado });
+    return this.api.put(`/admin/reservas/${id}`, { estado: nuevoEstado });
   }
 }

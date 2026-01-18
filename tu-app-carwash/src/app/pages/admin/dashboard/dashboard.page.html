@@ -15,6 +15,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="loadStats($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <div class="dashboard-container">
     
     <div class="welcome-section">
@@ -27,7 +30,10 @@
         <div class="stat-icon-wrapper">
           <ion-icon name="water"></ion-icon>
         </div>
-        <h3 class="stat-value">12</h3>
+        <h3 class="stat-value" *ngIf="!isLoading; else washSkeleton">{{ stats?.today_wash_count ?? 0 }}</h3>
+        <ng-template #washSkeleton>
+          <ion-skeleton-text animated="true" style="width: 48px; height: 28px;"></ion-skeleton-text>
+        </ng-template>
         <p class="stat-label">Lavados Hoy</p>
       </div>
 
@@ -35,7 +41,10 @@
         <div class="stat-icon-wrapper success">
           <ion-icon name="cash"></ion-icon>
         </div>
-        <h3 class="stat-value">$450</h3>
+        <h3 class="stat-value" *ngIf="!isLoading; else incomeSkeleton">{{ (stats?.today_income ?? 0) | currency }}</h3>
+        <ng-template #incomeSkeleton>
+          <ion-skeleton-text animated="true" style="width: 96px; height: 28px;"></ion-skeleton-text>
+        </ng-template>
         <p class="stat-label">Ingresos</p>
       </div>
     </div>

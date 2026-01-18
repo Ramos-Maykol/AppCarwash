@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { saveAs } from 'file-saver';
+import { ApiService } from './api.service';
 
 // Librerías de Exportación
 import * as XLSX from 'xlsx';
@@ -36,17 +35,16 @@ export interface ReportData {
   providedIn: 'root'
 })
 export class AdminReportesService {
-  private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl + '/admin/reportes';
+  private api = inject(ApiService);
 
   // 1. OBTENER DATOS
   getReportData(filtros: any = {}): Observable<ReportData> {
-    let params = new HttpParams();
-    if (filtros.desde) params = params.set('desde', filtros.desde);
-    if (filtros.hasta) params = params.set('hasta', filtros.hasta);
-    if (filtros.estado) params = params.set('estado', filtros.estado);
+    const params: Record<string, string> = {};
+    if (filtros.desde) params['desde'] = String(filtros.desde);
+    if (filtros.hasta) params['hasta'] = String(filtros.hasta);
+    if (filtros.estado) params['estado'] = String(filtros.estado);
 
-    return this.http.get<ReportData>(`${this.apiUrl}/data`, { params });
+    return this.api.get<ReportData>('/admin/reportes/data', params);
   }
 
   // 2. GENERAR WORD (DOCX)

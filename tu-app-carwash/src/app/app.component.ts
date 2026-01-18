@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { Router, NavigationStart } from '@angular/router';
 import { NavigationMenuComponent } from './components/navigation-menu/navigation-menu.component';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +29,18 @@ export class AppComponent {
 
     // Observar páginas ocultas y aplicar 'inert' automáticamente
     this.setupInertForHiddenPages();
+
+    void this.setupStatusBar();
+  }
+
+  private async setupStatusBar() {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+
+    await StatusBar.setOverlaysWebView({ overlay: false });
+    await StatusBar.setBackgroundColor({ color: '#ffffff' });
+    await StatusBar.setStyle({ style: Style.Dark });
   }
 
   private setupInertForHiddenPages() {

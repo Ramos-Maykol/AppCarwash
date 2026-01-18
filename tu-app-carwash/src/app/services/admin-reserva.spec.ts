@@ -1,13 +1,24 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AdminReserva } from './admin-reserva';
+import { AdminReservaService } from './admin-reserva';
+import { ApiService } from './api.service';
 
-describe('AdminReserva', () => {
-  let service: AdminReserva;
+describe('AdminReservaService', () => {
+  let service: AdminReservaService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(AdminReserva);
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ApiService,
+          useValue: {
+            get: () => ({ subscribe: () => undefined }),
+            put: () => ({ subscribe: () => undefined }),
+          }
+        }
+      ]
+    });
+    service = TestBed.inject(AdminReservaService);
   });
 
   it('should be created', () => {

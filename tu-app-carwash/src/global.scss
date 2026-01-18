@@ -74,30 +74,41 @@
 }
 
 /* ===========================================
-   ESTILOS GLOBALES
+   FIX DE ESTRUCTURA Y SAFE AREA (SOLUCIÓN)
    =========================================== */
 
+/* 1. Header que respeta el Notch/Barra de estado */
+ion-header {
+  background: var(--surface-primary);
+  z-index: 1000; /* Asegura que esté encima */
+}
+
+ ion-header ion-toolbar {
+  padding-top: var(--ion-safe-area-top, env(safe-area-inset-top));
+ }
+
+/* 2. Configuración del Contenido */
 ion-content {
   --background: var(--background-secondary);
+  
+  /* Espaciado interno global */
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+
+  position: relative;
+  flex: 1;
+  
+  &::part(scroll) {
+    padding-bottom: 100px !important; 
+  }
 }
 
-ion-card {
-  border-radius: var(--border-radius-xl);
-  box-shadow: var(--shadow-light);
-  border: 1px solid var(--border-color);
-  background: var(--surface-primary);
-  margin: 16px 0;
-}
-
-/* ===========================================
-   FIX GLOBAL DE LAYOUT Y FAB (LO IMPORTANTE)
-   =========================================== */
-
-/* 1. Estructura base de la página */
+/* 3. Estructura base de la página */
 .ion-page {
   display: flex !important;
   flex-direction: column !important;
-  /* IMPORTANTE: Quitamos 'justify-content: space-between' para evitar huecos raros */
   justify-content: flex-start !important; 
   left: 0;
   right: 0;
@@ -108,43 +119,37 @@ ion-card {
   overflow: hidden;
 }
 
-/* 2. Scroll y Espaciado global */
-ion-content {
-  position: relative;
-  flex: 1;
-  
-  /* Esto asegura que SIEMPRE haya espacio al final de CUALQUIER lista 
-     para que el FAB no tape el último elemento */
-  &::part(scroll) {
-    padding-bottom: 100px !important; 
-  }
+/* ===========================================
+   ESTILOS COMPONENTES
+   =========================================== */
+
+ion-card {
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-color);
+  background: var(--surface-primary);
+  margin-bottom: 16px; /* Mejor usar margin-bottom que margin vertical */
 }
 
-/* 3. Posicionamiento del Botón Flotante (FAB) */
+/* Posicionamiento del Botón Flotante (FAB) */
 ion-fab {
   position: fixed !important; 
   z-index: 999 !important;
 }
 
-/* Ajuste inteligente para el FAB en la esquina inferior derecha */
 ion-fab[vertical="bottom"] {
-  /* Sube el botón automáticamente 20px + el área segura del iPhone */
   margin-bottom: calc(20px + env(safe-area-inset-bottom)) !important;
 }
 
-/* Ajuste lateral */
 ion-fab[horizontal="end"] {
   margin-right: 16px !important;
 }
 
-/* ===========================================
-   CLASES DE UTILIDAD
-   =========================================== */
+/* Utilidades */
 .text-center { text-align: center; }
 .text-primary { color: var(--primary-color); }
 .font-bold { font-weight: 600; }
 
-/* Scrollbars bonitos para Web */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--neutral-100); }
 ::-webkit-scrollbar-thumb { background: var(--neutral-300); border-radius: 3px; }
